@@ -1,0 +1,14 @@
+.top{
+    margin-top: 3rem;
+}
+ .card{
+    cursor: pointer;
+    box-shadow: 0 6px 10px rgba(173, 173, 173, 0.8);
+ }
+ 
+.card:hover{
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(83, 83, 83, 0.8);
+    opacity: 0.8;
+    transition: 0.5s;
+}
