@@ -1,145 +1,212 @@
-<!doctype html>
-{% load static %}
-{% load widget_tweaks %}
+<!doctype html> {% load static %} {% load widget_tweaks %}
 <html lang="en">
+
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Hello, world!</title>
-<!-- Bootstrap CSS -->
+    <title>WeDeliver | {% block title %}{% endblock title%}</title>
+    <!-- Bootstrap CSS -->
 
-<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">  
-<link href="{% static 'css/all.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/main.css' %}" rel="stylesheet">
-<link href="{% static 'css/fontawesome.css' %}" rel="stylesheet">
-<link href="{% static 'css/brands.css' %}" rel="stylesheet">
-<link href="{% static 'css/solid.css' %}" rel="stylesheet">
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/all.min.js' %}"></script>
-<script src="{% static 'js/popper.js' %}"></script> 
-<script src="{% static 'js/jquery.js' %}"></script>
-<script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/main.js' %}"></script>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/all.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'css/fontawesome.css' %}" rel="stylesheet">
+    <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/maps/maps.css'>
+    <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/SearchBox/3.1.3-public-preview.0/SearchBox.css'>
+
 
 </head>
+
 <body>
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark scrolling-navbar">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Orders</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
-        </li>
-      </ul>
-    </div>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav  ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" id="locationButton" data-bs-toggle="modal" data-bs-target="#locationModal" href="#">Your Location</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="loginButton" data-bs-toggle="modal" data-bs-dismiss="navbar" data-bs-target="#loginModal" href="#">Login</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark scrolling-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="#">WeDeliver</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+             login   <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contactus">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="aboutus">About Us</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav  ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" id="locationButton" data-bs-toggle="modal" data-bs-target="#locationModal"
+                            href="#"> <i class="fas fa-map-marker-alt"></i> Set Location</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="loginButton" data-bs-toggle="modal" data-bs-dismiss="navbar"
+                            data-bs-target="#loginModal" href="#">Log In</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-<!-- Login Modal -->
-<div class="modal fade" id="loginModal" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <table>
-                <form method="" action="">
-                  <div class="row">
-                    <div class="col col-sm-6 img-responsive">
-                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHnKR27SupjNEVQpr5X4FOG1dkodhQhEid6T6bVEvpX5tZbqIY2HeE18GcTB342wBuiDU&usqp=CAU" alt="login">
-                    </div>
-                    <div class="col col-sm-6">
-                    {% csrf_token %}
-                    <!-- <span><i class="fa fa-user"></i> Username<i class="text-danger">*</i> :</span>{{ form.user_name }}
-                    <span><i class="fa fa-lock"></i> Password<i class="text-danger">*</i> :</span>{{ form.password }} -->
-                    {{ form.user_name }}
-                    {{ form.password }}
-                    {{ form.remember_me }}<span style="font-size: 10px;"> Remember Me </span> 
-                    <a class="mt-2" href="#" style="font-size: 10px; float:right;">Forget Password?</a>             
-                    <p><button type="submit" class="btn btn-primary mt-2 " style="font-size: 10px; margin-left:15px;">LogIn</button></p>
-                    </div>
-                  </div>
-                </form>
-              </table>
-            </div>
-            <div class="modal-footer"  style="font-size: 10px; justify-content: center;">
-             <span>New Users?<a id="signinButton" data-bs-toggle="modal" data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create Account</a></span>
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="loginModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <table>
+                        <form method="POST" action="">
+                            <div class="row">
+                                <div class="col col-sm-5 d-none d-sm-block">
+                                    <img src="{% static 'media/login.png' %}" class="img-fluid d-none d-sm-block"
+                                        alt="login">
+                                </div>
+                                <div class="col-12 col-sm-7">
+                                    <div class="row">
+                                        <div class="col col-sm-10">
+                                            <b>
+                                                <p class="modal-title m-3" id="loginModalLabel"
+                                                    style="font-size: 30px;">Log In</p>
+                                            </b>
+                                        </div>
+                                        <div class="col col-sm-2">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close" style="float: right; font-size: 10px;"></button>
+                                        </div>
+                                    </div>
+                                    {% csrf_token %}
+                                    {{ form.non_field_errors }}
+                                    <div id="user_name">
+                                        {% render_field loginform.user_name class="form-control login mt-2" placeholder="Username" %}
+                                        {% render_field loginform.user_name.errors class="form-control login mt-2" placeholder="Username" %}
+                                    </div>
+                                    <div id="password">
+                                        {% render_field loginform.password class="form-control login mt-2" placeholder="Password" %}
+                                        {% render_field loginform.password.errors class="form-control login mt-2" placeholder="Password" %}
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6" id="remenber_me">
+                                            {{ loginform.remember_me|safe }}{{ loginform.remember_me.errors }}<span style="font-size: 10px;"> Remember Me </span>
+                                        </div>
+                                        <div class="col-6 mt-3">
+                                            <a href="#" style="font-size: 10px; float:right;">Forget Password?</a>
+                                        </div>
+                                    </div>
+                                    <div class="center mt-2">
+                                        <p><button type="submit" class="btn btn-primary mt-2"
+                                                style="font-size: 10px;">LogIn</button></p>
+                                    </div>
+                                    <div class="login-hr">
+                                        <p>or</p>
+                                    </div>
+                                    <p class="center" style="font-size: 10px;">LogIn with</p>
+                                    <div class="center">
+                                        <span><img src="{% static 'media/facebooklogo.png' %}"
+                                                class="btn login-logo"></span>
+                                        <span><img src="{% static 'media/googlelogo.png' %}"
+                                                class="btn login-logo"></span>
+                                    </div>
+                                    <div class="center mt-3" style="font-size: 10px;">
+                                        <span>New Users?<a id="signinButton" data-bs-toggle="modal"
+                                                data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
+                                                Account</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Location Modal -->
-<div class="modal fade" id="locationModal" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="locationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="locationModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Location
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
+    <!-- Location Modal -->
+    <div class="modal fade" id="locationModal" data-bs-keyboard="true" tabindex="-1"
+        aria-labelledby="locationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="locationModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Location
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Signin Modal -->
-<div class="modal fade" id="signinModal" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="signinModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="signinModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Signin
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Understood</button>
+    <!-- Signin Modal -->
+    <div class="modal fade" id="signinModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="signinModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signinModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Signin
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
             </div>
         </div>
+    </div>
+<div class="image-background">
+    <div class="container">
+        {% block content %} {% endblock content %}
     </div>
 </div>
 
 <div class="container">
-{% block content %}
-{% endblock content %}
+    {% block content2 %} {% endblock content2 %}
 </div>
+<div class="container">
+    {% block content3 %} {% endblock content3 %}
+</div>
+
+    {% block content4 %} {% endblock content4 %}
+
+
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/popper.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/all.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{google_map_key}}&libraries=places"></script> -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/maps-web.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/services-web.min.js' %}"></script>
+    <script type="text/javascript" src="https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/SearchBox/3.1.3-public-preview.0/SearchBox-web.js"></script>
+    <script type="text/javascript" src="{% static 'js/searchmarkersmanager.js' %}"></script>
+    {{ tomtom_map_key|json_script:"tomtom_map_key" }}
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/all.js' %}"></script>
 </body>
+</body>
+
 </html>
