@@ -1,6 +1,10 @@
-<!doctype html> {% load static %} {% load widget_tweaks %}
-<html lang="en">
+<!doctype html> 
+{% load static %} 
+{% load widget_tweaks %}
+{% load socialaccount %}
+{% providers_media_js %}
 
+<html lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -28,11 +32,11 @@
 <body>
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark scrolling-navbar">
         <div class="container">
-            <a class="navbar-brand" href="#">WeDeliver</a>
+            <a class="navbar-brand" href="home">We<span class="text-warning">Deliver</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
-             login   <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
@@ -43,10 +47,10 @@
                         <a class="nav-link" href="#">Orders</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contactus">Contact Us</a>
+                        <a class="nav-link" href="aboutus">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="aboutus">About Us</a>
+                        <a class="nav-link" href="contactus">Contact Us</a>
                     </li>
                 </ul>
             </div>
@@ -58,7 +62,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="loginButton" data-bs-toggle="modal" data-bs-dismiss="navbar"
-                            data-bs-target="#loginModal" href="#">Log In</a>
+                            data-bs-target="#loginModal" href="#"><i class="fas fa-user-circle"></i> {{user}}</a>
                     </li>
                 </ul>
             </div>
@@ -118,10 +122,14 @@
                                     </div>
                                     <p class="center" style="font-size: 10px;">LogIn with</p>
                                     <div class="center">
+                                    <a href="{% provider_login_url 'google' %}">
+                                            <span><img src="{% static 'media/googlelogo.png' %}"
+                                                    class="btn login-logo"></span>
+                                    </a>
+                                    <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
                                         <span><img src="{% static 'media/facebooklogo.png' %}"
                                                 class="btn login-logo"></span>
-                                        <span><img src="{% static 'media/googlelogo.png' %}"
-                                                class="btn login-logo"></span>
+                                    </a>
                                     </div>
                                     <div class="center mt-3" style="font-size: 10px;">
                                         <span>New Users?<a id="signinButton" data-bs-toggle="modal"
@@ -206,7 +214,6 @@
     {{ tomtom_map_key|json_script:"tomtom_map_key" }}
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.js' %}"></script>
+    
 </body>
-</body>
-
 </html>

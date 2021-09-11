@@ -20,7 +20,8 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('packagedelivery/', include('packagedelivery.urls'))
+    path('packagedelivery/', include('packagedelivery.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

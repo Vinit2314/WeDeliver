@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+
 import os
-import packagedelivery
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zcvhd)re=f7w7$lxa0ap0!w)x5*%)l)3b=vxn%f3e4o^3v)51u'
+SECRET_KEY = 'django-insecure-vk5p6s#^t#cjb)q9*)gj6-qb1&c)04j3#@^tlvlp624$fxmf()'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'packagedelivery',
     'widget_tweaks',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 ]
 
 MIDDLEWARE = [
@@ -126,6 +132,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/')
 ]
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/packagedelivery/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
