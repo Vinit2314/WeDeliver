@@ -33,9 +33,7 @@
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark scrolling-navbar">
         <div class="container">
             <a class="navbar-brand" href="home">We<span class="text-warning">Deliver</span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -92,50 +90,50 @@
                                         </div>
                                         <div class="col col-sm-2">
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close" style="float: right; font-size: 10px;"></button>
+                                                aria-label="Close" style="float: right; font-size: 10px;" click="myFunction()"></button>
                                         </div>
                                     </div>
-                                    {% csrf_token %}
-                                    {{ form.non_field_errors }}
-                                    <div id="user_name">
-                                        {% render_field loginform.user_name class="form-control login mt-2" placeholder="Username" %}
-                                        {% render_field loginform.user_name.errors class="form-control login mt-2" placeholder="Username" %}
-                                    </div>
-                                    <div id="password">
-                                        {% render_field loginform.password class="form-control login mt-2" placeholder="Password" %}
-                                        {% render_field loginform.password.errors class="form-control login mt-2" placeholder="Password" %}
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6" id="remenber_me">
-                                            {{ loginform.remember_me|safe }}{{ loginform.remember_me.errors }}<span style="font-size: 10px;"> Remember Me </span>
+                                    <form id="loginform" action="" method="POST" autocomplete="off">
+                                        {% csrf_token %}
+                                        {{ loginform.non_field_errors }}
+                                        <div id="user_name">
+                                            {% render_field loginform.user_name class="form-control login mt-2" placeholder="Username" %}
                                         </div>
-                                        <div class="col-6 mt-3">
-                                            <a href="#" style="font-size: 10px; float:right;">Forget Password?</a>
+                                        <div id="password">
+                                            {% render_field loginform.password class="form-control login mt-2" placeholder="Password" %}
                                         </div>
-                                    </div>
-                                    <div class="center mt-2">
-                                        <p><button type="submit" class="btn btn-primary mt-2"
-                                                style="font-size: 10px;">LogIn</button></p>
-                                    </div>
-                                    <div class="login-hr">
-                                        <p>or</p>
-                                    </div>
-                                    <p class="center" style="font-size: 10px;">LogIn with</p>
-                                    <div class="center">
-                                    <a href="{% provider_login_url 'google' %}">
-                                            <span><img src="{% static 'media/googlelogo.png' %}"
+                                        <div class="row">
+                                            <div class="col-6" id="remenber_me">
+                                                {{ loginform.remember_me|safe }}{{ loginform.remember_me.errors }}<span style="font-size: 10px;"> Remember Me </span>
+                                            </div>
+                                            <div class="col-6 mt-3">
+                                                <a href="#" style="font-size: 10px; float:right;">Forget Password?</a>
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-2">
+                                            <p><button type="submit" class="btn btn-primary mt-2"
+                                                    style="font-size: 10px;" onclick="myFunction()">LogIn</button></p>
+                                        </div>
+                                        <div class="login-hr">
+                                            <p>or</p>
+                                        </div>
+                                        <p class="text-center" style="font-size: 10px;">LogIn with</p>
+                                        <div class="text-center">
+                                        <a href="{% provider_login_url 'google' %}">
+                                                <span><img src="{% static 'media/googlelogo.png' %}"
+                                                        class="btn login-logo"></span>
+                                        </a>
+                                        <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
+                                            <span><img src="{% static 'media/facebooklogo.png' %}"
                                                     class="btn login-logo"></span>
-                                    </a>
-                                    <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
-                                        <span><img src="{% static 'media/facebooklogo.png' %}"
-                                                class="btn login-logo"></span>
-                                    </a>
-                                    </div>
-                                    <div class="center mt-3" style="font-size: 10px;">
-                                        <span>New Users?<a id="signinButton" data-bs-toggle="modal"
-                                                data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
-                                                Account</a></span>
-                                    </div>
+                                        </a>
+                                        </div>
+                                        <div class="text-center mt-3" style="font-size: 10px;">
+                                            <span>New Users?<a id="signinButton" data-bs-toggle="modal"
+                                                    data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
+                                                    Account</a></span>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </form>
@@ -184,7 +182,8 @@
             </div>
         </div>
     </div>
-<div class="image-background">
+
+<div class="home-img-background">
     <div class="container">
         {% block content %} {% endblock content %}
     </div>
@@ -193,13 +192,12 @@
 <div class="container">
     {% block content2 %} {% endblock content2 %}
 </div>
+
 <div class="container">
     {% block content3 %} {% endblock content3 %}
 </div>
 
     {% block content4 %} {% endblock content4 %}
-
-
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/popper.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.min.js' %}"></script>
@@ -212,8 +210,75 @@
     <script type="text/javascript" src="https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/SearchBox/3.1.3-public-preview.0/SearchBox-web.js"></script>
     <script type="text/javascript" src="{% static 'js/searchmarkersmanager.js' %}"></script>
     {{ tomtom_map_key|json_script:"tomtom_map_key" }}
+    {{ razorpay_api_key|json_script:"razorpay_api_key" }}
+    {% if payment %}
+    {{ payment|json_script:"payment"}}
+    {% endif %}
+    <script type="text/javascript" src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.js' %}"></script>
-    
+    <!-- {% if payment %}
+    <script>
+        var amount = "{{payment.amount}}";
+        var currency = "{{payment.currency}}";
+        var order_id = "{{payment.id}}";
+        console.log(amount);
+        console.log(currency);
+        console.log(order_id);
+
+        var options = {
+            "key": "rzp_test_YeUQJn3xhNMSok",
+            "amount": amount,
+            "currency": currency,
+            "name": "WeDeliver",
+            "description": "Fast and Secure",
+            "image": "https://images.crowdspring.com/blog/wp-content/uploads/2017/07/27131755/9b475a68-ee0f-4895-8082-2a4706cfeb4b.png",
+            "order_id": order_id,
+            //"callback_url":"success",
+            "handler": function (response) {
+                var payment_id = response.razorpay_payment_id;
+                sessionStorage.setItem("paymentid", payment_id);
+                var date = new Date();
+                var n = date.toDateString();
+                var time = date.toLocaleTimeString();
+                paid_on = n + ' ' + time;
+                sessionStorage.setItem("paidon", paid_on);
+                window.location.href = "success";
+
+            },
+            "prefill": {
+                "name": "'Gaurav Kuma'r",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9999999999"
+            },
+            "notes": {
+                "address": "WeDeliver"
+            },
+            "theme": {
+                "color": "#F37254"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        var amt = amount;
+        console.log(amt)
+        amt_paid = amt / 100;
+        console.log(amt_paid)
+        sessionStorage.setItem("amount", amt_paid);
+        rzp1.on('payment.failed', function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+        });
+        document.getElementById('rzp-button1').onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
+    {% endif %} -->
 </body>
 </html>

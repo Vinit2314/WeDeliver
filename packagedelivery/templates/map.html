@@ -1,28 +1,74 @@
 {% extends 'base.html' %}
 
 {% block title %}Map{% endblock title %}
-
+{% load widget_tweaks %}
 {% block content2 %}
-<div>
-    <div class="row top pt-4">
-        <div class="col-12 col-sm-4">
-            <div class="searchBox mb-4"></div>
-            <!-- <input  type="text" id="auto" name="auto" class="search-outer form-control as-input" placeholder="eg.Mumbai..." required="" spellcheck="false" > -->
+
+<div class="row top pt-4">
+    <div class="col-12 col-sm-4">
+        <!-- <div class="searchBox mb-4"></div> -->
+        <!-- <input  type="text" id="auto" name="auto" class="search-outer form-control as-input" placeholder="eg.Mumbai..." required="" spellcheck="false" > -->
+        <div class="card mapcard">
             <form action="" method="POST">
-      
                 {% csrf_token %}
-                {{ formkg.as_p }}{{ formkg.errors }}
-                {% if price == None %}
-                    <div id="price">{{ price }}</div>
-                {% else %}
-                    <div id="price">{{ price }}</div>
-                {% endif %}
-                <!-- {{ price|json_script:"price" }} -->
+                {{ map_form.non_field_errors }}
+                <img class="card-img-top "
+                    src="https://static.vecteezy.com/system/resources/previews/001/999/829/non_2x/online-delivery-with-mobile-application-fast-delivery-package-by-courier-on-mobile-phone-tracking-courier-food-by-map-application-vector.jpg"
+                    alt="Card image">
+                <div class="scrollbar">
+                    <div class="card-body">
+                        <div id="pickuppoint">
+                            <b>Pickup Point</b>
+                            <div class="name1">
+                                {% render_field map_form.name1 class="form-control map-form mt-2" placeholder="Name" %}
+                            </div>
+                            <div class="address1">
+                                {% render_field map_form.address1 class="form-control map-form mt-2" placeholder="Pickup Location" %}
+                            </div>
+                            <div class="number1">
+                                {% render_field map_form.number1 class="form-control map-form mt-2" placeholder="Phone Number" %}
+                            </div>
+                        </div>
+                        <div class="mt-4" id="deliverypoint">
+                            <b>Delivery Point</b>
+                            <div class="name2">
+                                {% render_field map_form.name2 class="form-control map-form mt-2" placeholder="Name" %}
+                            </div>
+                            <div class="address2">
+                                {% render_field map_form.address2 class="form-control map-form mt-2" placeholder="Delivery Location" %}
+                            </div>
+                            <div class="number2">
+                                {% render_field map_form.number2 class="form-control map-form mt-2" placeholder="Phone Number" %}
+                            </div>
+                        </div>
+                        <div class="mt-4" id="kg">
+                            Weight in Kilograms : {% render_field map_form.kg class="btn dropdown-toggle btn-sm map-form-select"%}
+                        </div>
+                        <div class="mt-4" id="modeofpayment">
+                            <b>Mode of Payment</b>
+                            {% for map in map_form.mode_of_payment %}
+                                <div class="mt-2">
+                                    {{map|safe}}
+                                    {{map.errors}}
+                                </div>
+                            {% endfor%}
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6 price">
+                                <div class="mt-4" id="price" name="amount">Amt : 0 ₹</div>
+                            </div>
+                            <div class="col-6 mt-3 placeorder">
+                                <input class="btn btn-success" type="submit" value="Proceed">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
-        <div class="col col-sm-8 d-none d-sm-block">
-            <div id='map'></div>
-        </div>
+        <div class="mt-4"></div>
+    </div>
+    <div class="col col-sm-8 d-none d-sm-block">
+        <div id='map'></div>
     </div>
 </div>
 

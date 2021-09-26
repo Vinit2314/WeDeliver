@@ -324,26 +324,90 @@ SearchMarker.prototype.remove = function () {
 map.addControl(new tt.FullscreenControl());
 map.addControl(new tt.NavigationControl());
 
-function myFunction(value) {
-    // price = JSON.parse(document.getElementById('price').textContent)
-    var kg = value;
+//Price calculation and map form info
+function price_map_info() {
+    var kg = $('#kg_value').val();
     var price_per_kg = 5;
     var distance = 10;
-    var price = kg * price_per_kg * distance;
-    // document.getElementById('price').innerHTML = price;
-
+    var total_price = Math.round(kg * price_per_kg * distance);
+    var price = 'Amt : ' + total_price + ' ₹';
+    document.getElementById('price').innerHTML = price;
+    info = {
+        'name1' : $('#name1').val(),
+        'address1' : $('#address1').val(),
+        'number1' : $('#number1').val(),
+        'name2' : $('#name2').val(),
+        'address2' : $('#address2').val(),
+        'number2' : $('#number2').val(),
+        'kg' : kg,
+        'amount': total_price,
+    };
     $.ajax({
-        type: "GET",
         url: "map",
-        data: {
-            price: price,
-        },
-        // dataType: "json",
+        type: "GET",
+        data: info,
         success: function (data) {
-            console.log(price)
         },
-        failure: function () {
-            alert("failure");
+        failure: function (data) {
+            alert('Got an error!!');
         }
     });
+}
+
+// Razorpay
+function razorpay() {
+    var payment = JSON.parse(document.getElementById('payment').textContent);
+    var razorpay_api_key = JSON.parse(document.getElementById('razorpay_api_key').textContent);
+    var amount = payment.amount;
+    var currency = payment.currency;
+    var order_id = payment.id;
+    var options = {
+        "key": razorpay_api_key,
+        "amount": amount,
+        "currency": currency,
+        "name": "WeDeliver",
+        "description": "Fast and Secure",
+        "image": "https://images.crowdspring.com/blog/wp-content/uploads/2017/07/27131755/9b475a68-ee0f-4895-8082-2a4706cfeb4b.png",
+        "order_id": order_id,
+        "callback_url":"success",
+        // "handler": function (response) {
+        //     var payment_id = response.razorpay_payment_id;
+        //     sessionStorage.setItem("paymentid", payment_id);
+        //     var date = new Date();
+        //     var n = date.toDateString();
+        //     var time = date.toLocaleTimeString();
+        //     paid_on = n + ' ' + time;
+        //     sessionStorage.setItem("paidon", paid_on);
+        //     window.location.href = "success";
+        // },
+        "prefill": {
+            "name": "'Gaurav Kuma'r",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9999999999"
+        },
+        "notes": {
+            "address": "WeDeliver"
+        },
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+    });
+    document.getElementById('rzp-button').onclick = function (e) {
+        rzp1.open();
+        e.preventDefault();
+    }
+}
+function backpage(){
+    history.back()
 }

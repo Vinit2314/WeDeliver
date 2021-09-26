@@ -86,8 +86,15 @@ WSGI_APPLICATION = 'WebProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'WeDeliver',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'USER': 'Tanmay',
+        'PASSWORD': '9987793650',
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        }
     }
 }
 
@@ -137,6 +144,7 @@ SITE_ID = 1
 
 LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/packagedelivery/"
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -145,3 +153,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GOOGLE_API_KEY = 'AIzaSyDzXEs-EuKe3-pBGP5UB-NUNa20LLTnmXs'
 
 TOMTOM_API_KEY = 'GwMUCyotgAlBBG2A0dfNP33NnzGH1dpM'
+
+RAZORPAY_KEY = 'rzp_test_YeUQJn3xhNMSok'
+
+RAZORPAY_SECRET_KEY = 'YMTDA6EkqhUMEm5txnBuItQs'
