@@ -70,7 +70,7 @@ def map(request):
                                             'currency': 'INR',
                                             'payment_capture': '1'})
             context['payment'] = payment
-            context['amount'] = amt
+        context['amount'] = amt
         return render(request, 'confirm.html', context)
     return render(request, 'map.html', context)
 
@@ -86,6 +86,7 @@ def contactus(request):
 
 @csrf_exempt
 def success(request):
+    login(request)
     order_info = order()
     order_info.pickup_point_name = name1
     order_info.pickup_point_address = address1
@@ -94,7 +95,7 @@ def success(request):
     order_info.delivery_point_address = address2
     order_info.delivery_point_phone_number = number2
     order_info.weight = kg
-    order_info.mode_of_payemnt = mode_of_payment
+    order_info.mode_of_payment = mode_of_payment
     order_info.amount = amt
     if mode_of_payment == "Pay on Delivery":
         order_info.order_id = order_id
@@ -102,6 +103,6 @@ def success(request):
         for key, value in payment.items():
             if key == 'id':
                 razorpay_order_id = value
-                order_info.order_id = razorpay_order_idṣ
+                order_info.order_id = razorpay_order_id
     order_info.save()
-    return render(request, 'success.html')
+    return render(request, 'success.html', context)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %} 
 {% block title %}Map{% endblock title %}
-{% load widget_tweaks %}
 {% block content2 %}
 
 <div class="row top pt-4">
@@ -13,36 +13,43 @@
                 {% csrf_token %}
                 {{ map_form.non_field_errors }}
                 <img class="card-img-top "
-                    src="https://static.vecteezy.com/system/resources/previews/001/999/829/non_2x/online-delivery-with-mobile-application-fast-delivery-package-by-courier-on-mobile-phone-tracking-courier-food-by-map-application-vector.jpg"
+                    src="{% static 'media/mapformcard.jpg' %}"
                     alt="Card image">
                 <div class="scrollbar">
                     <div class="card-body">
                         <div id="pickuppoint">
                             <b>Pickup Point</b>
                             <div class="name1">
-                                {% render_field map_form.name1 class="form-control map-form mt-2" placeholder="Name" %}
+                                {{ map_form.pickup_point_name|safe }}
+                                {{ map_form.pickup_point_name.error }}
                             </div>
                             <div class="address1">
-                                {% render_field map_form.address1 class="form-control map-form mt-2" placeholder="Pickup Location" %}
+                                {{ map_form.pickup_point_address|safe }}
+                                {{ map_form.pickup_point_address.error }}
                             </div>
                             <div class="number1">
-                                {% render_field map_form.number1 class="form-control map-form mt-2" placeholder="Phone Number" %}
+                                {{ map_form.pickup_point_phone_number|safe }}
+                                {{ map_form.pickup_point_phone_number.error }}
                             </div>
                         </div>
                         <div class="mt-4" id="deliverypoint">
                             <b>Delivery Point</b>
                             <div class="name2">
-                                {% render_field map_form.name2 class="form-control map-form mt-2" placeholder="Name" %}
+                                {{ map_form.pickup_point_name|safe }}
+                                {{ map_form.pickup_point_name.error }}
                             </div>
                             <div class="address2">
-                                {% render_field map_form.address2 class="form-control map-form mt-2" placeholder="Delivery Location" %}
+                                {{ map_form.delivery_point_address|safe }}
+                                {{ map_form.delivery_point_address.error }}
                             </div>
                             <div class="number2">
-                                {% render_field map_form.number2 class="form-control map-form mt-2" placeholder="Phone Number" %}
+                                {{ map_form.delivery_point_phone_number|safe }}
+                                {{ map_form.delivery_point_phone_number.error }}
                             </div>
                         </div>
                         <div class="mt-4" id="kg">
-                            Weight in Kilograms : {% render_field map_form.kg class="btn dropdown-toggle btn-sm map-form-select"%}
+                            Weight in Kilograms : {{ map_form.weight|safe }}
+                            {{ map_form.weight.error }}
                         </div>
                         <div class="mt-4" id="modeofpayment">
                             <b>Mode of Payment</b>
@@ -51,7 +58,7 @@
                                     {{map|safe}}
                                     {{map.errors}}
                                 </div>
-                            {% endfor%}
+                            {% endfor %}
                         </div>
                         <div class="row mt-3">
                             <div class="col-6 price">
