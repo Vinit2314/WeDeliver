@@ -86,15 +86,12 @@ WSGI_APPLICATION = 'WebProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'WeDeliver',
         'HOST': 'localhost',
-        'PORT': '3306',
-        'USER': 'Tanmay',
+        'PORT': '5432',
+        'USER': 'postgres',
         'PASSWORD': '9987793650',
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-        }
     }
 }
 

@@ -1,35 +1,50 @@
-from django.shortcuts import render, HttpResponse
-from .forms import loginForm, maps
+from django.shortcuts import render
+from .forms import *
 from django.conf import settings
 from .models import *
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.contrib.auth.models import User, auth
 import string
 import random
 
 context = {}
 
-def login(request):
-    loginform = loginForm(request.POST or None, request.FILES or None)
-    context['loginform'] = loginform
+def signupform(request):
+    signup_form = signup_Form(request.POST or None, request.FILES or None)
+    context['signupform'] = signup_form
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        user = User.objects.create(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
+        print('created')
+
+def loginform(request):
+    login_form = login_Form(request.POST or None, request.FILES or None)
+    context['loginform'] = login_form
     # if loginform.is_valid():
     #     # loginform.save()
     #     if request.method == 'POST':
-    #         login_info = login_form()
-    #         login_info.user_name =  str(request.POST['user_name'])
-    #         login_info.password = str(request.POST['password'])
+    #         login_info = login()
+    #         login_info.user_name =  request.POST['user_name'
+    #         login_info.password = request.POST['password']
     #         login_info.remember_me = bool(request.POST['remember_me'])
     #         login_info.save()
 
-
 def home(request):
-    login(request)
+    loginform(request)
+    signupform(request)
     return render(request, 'home.html', context)
 
 
 def map(request):
-    login(request)
+    loginform(request)
+    signupform(request)
     # context['google_map_key'] = settings.GOOGLE_API_KEY
     context['tomtom_map_key'] = settings.TOMTOM_API_KEY
     context['razorpay_api_key'] = settings.RAZORPAY_KEY
@@ -59,7 +74,6 @@ def map(request):
             for i in range(length):
 		            orderid.append(random.choice(characters))
             order_id = 'order_' +  ("".join(orderid))
-            print(order_id)
         else:
             client = razorpay.Client(
                 auth=(settings.RAZORPAY_KEY, settings.RAZORPAY_SECRET_KEY))
@@ -76,17 +90,20 @@ def map(request):
 
 
 def aboutus(request):
-    login(request)
+    loginform(request)
+    signupform(request)
     return render(request, "aboutus.html", context)
 
 
 def contactus(request):
-    login(request)
+    loginform(request)
+    signupform(request)
     return render(request, "contactus.html", context)
 
 @csrf_exempt
 def success(request):
-    login(request)
+    loginform(request)
+    signupform(request)
     order_info = order()
     order_info.pickup_point_name = name1
     order_info.pickup_point_address = address1

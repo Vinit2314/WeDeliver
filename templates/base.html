@@ -72,73 +72,67 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <table>
-                        <form method="POST" action="">
+                    <div class="row">
+                        <div class="col col-sm-5 d-none d-sm-block">
+                            <img src="{% static 'media/login.png' %}" class="img-fluid d-none d-sm-block"
+                                alt="login">
+                        </div>
+                        <div class="col-12 col-sm-7">
                             <div class="row">
-                                <div class="col col-sm-5 d-none d-sm-block">
-                                    <img src="{% static 'media/login.png' %}" class="img-fluid d-none d-sm-block"
-                                        alt="login">
+                                <div class="col col-sm-10">
+                                    <b>
+                                        <p class="modal-title m-2 font_size_30" id="loginModalLabel">Log In</p>
+                                    </b>
                                 </div>
-                                <div class="col-12 col-sm-7">
-                                    <div class="row">
-                                        <div class="col col-sm-10">
-                                            <b>
-                                                <p class="modal-title m-3" id="loginModalLabel"
-                                                    style="font-size: 30px;">Log In</p>
-                                            </b>
-                                        </div>
-                                        <div class="col col-sm-2">
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close" style="float: right; font-size: 10px;" click="myFunction()"></button>
-                                        </div>
-                                    </div>
-                                    <form id="loginform" action="" method="POST" autocomplete="off">
-                                        {% csrf_token %}
-                                        {{ loginform.non_field_errors }}
-                                        <div id="user_name">
-                                            {{ loginform.user_name|safe }}
-                                            {{ loginform.user_name.error }}
-                                        </div>
-                                        <div id="password">
-                                            {{ loginform.password|safe }}
-                                            {{ loginform.password.error }}
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6" id="remenber_me">
-                                                {{ loginform.remember_me|safe }}{{ loginform.remember_me.errors }}<span style="font-size: 10px;"> Remember Me </span>
-                                            </div>
-                                            <div class="col-6 mt-3">
-                                                <a href="#" style="font-size: 10px; float:right;">Forget Password?</a>
-                                            </div>
-                                        </div>
-                                        <div class="text-center mt-2">
-                                            <p><button type="submit" class="btn btn-primary mt-2"
-                                                    style="font-size: 10px;" onclick="myFunction()">LogIn</button></p>
-                                        </div>
-                                        <div class="login-hr">
-                                            <p>or</p>
-                                        </div>
-                                        <p class="text-center" style="font-size: 10px;">LogIn with</p>
-                                        <div class="text-center">
-                                        <a href="{% provider_login_url 'google' %}">
-                                                <span><img src="{% static 'media/googlelogo.png' %}"
-                                                        class="btn login-logo"></span>
-                                        </a>
-                                        <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
-                                            <span><img src="{% static 'media/facebooklogo.png' %}"
-                                                    class="btn login-logo"></span>
-                                        </a>
-                                        </div>
-                                        <div class="text-center mt-3" style="font-size: 10px;">
-                                            <span>New Users?<a id="signinButton" data-bs-toggle="modal"
-                                                    data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
-                                                    Account</a></span>
-                                        </div>
-                                    </form>
+                                <div class="col col-sm-2">
+                                    <button type="button" class="btn-close font_size_10  float_right" data-bs-dismiss="modal"
+                                        aria-label="Close" click="myFunction()"></button>
                                 </div>
                             </div>
-                        </form>
-                    </table>
+                            <form id="loginform" action="" method="POST" autocomplete="off">
+                                {% csrf_token %}
+                                <div class="row">
+                                {{ loginform.non_field_errors }}
+                                    <div class="col-12 mt-3" id="user_name">
+                                            {{ loginform.user_name|safe }}
+                                            {{ loginform.user_name.error }}
+                                    </div>
+                                    <div class="col-12 mt-3" id="password">
+                                            {{ loginform.password|safe }}
+                                            {{ loginform.password.error }}
+                                    </div>
+                                    <div class="col-6 mt-3" id="remenber_me">
+                                        {{ loginform.remember_me|safe }}{{ loginform.remember_me.errors }}<span class="font_size_10"> Remember Me </span>
+                                    </div>
+                                    <div class="col-6 mt-4">
+                                        <a href="#" class="font_size_10 float_right">Forget Password?</a>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <p><button type="submit" class="btn btn-primary mt-2 font_size_10">LogIn</button></p>
+                                </div>
+                                <div class="login-hr">
+                                    <p>or</p>
+                                </div>
+                                <p class="text-center font_size_10">LogIn with</p>
+                                <div class="text-center">
+                                <a href="{% provider_login_url 'google' %}">
+                                        <span><img src="{% static 'media/googlelogo.png' %}"
+                                                class="btn login-logo"></span>
+                                </a>
+                                <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
+                                    <span><img src="{% static 'media/facebooklogo.png' %}"
+                                            class="btn login-logo"></span>
+                                </a>
+                                </div>
+                                <div class="text-center mt-3 font_size_10">
+                                    <span>New Users?<a id="signinButton" data-bs-toggle="modal"
+                                            data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
+                                            Account</a></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -170,15 +164,43 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="signinModalLabel">Modal title</h5>
+                    <h5 class="modal-title text-center" id="signinModalLabel">Sign Up</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Signin
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <div class="row">
+                            {{ signupform.non_field_errors }}
+                            <div class="col-6 mt-2">
+                                {{ signupform.first_name|safe }}
+                                {{ signupform.first_name.error }}
+                            </div>
+                            <div class="col-6 mt-2">
+                                {{ signupform.last_name|safe }}
+                                {{ signupform.last_nameemail_id }}
+                            </div>
+                            <div class="col-12 mt-3">
+                                {{ signupform.email|safe }}
+                                {{ signupform.email.error }}
+                            </div>
+                            <div class="col-12 mt-3">
+                                {{ signupform.username|safe }}
+                                {{ signupform.username.error }}
+                            </div>
+                            <div class="col-6 mt-3">
+                                {{ signupform.password|safe }}
+                                {{ signupform.password.error }}
+                            </div>
+                            <div class="col-6 mt-3 mb-2">
+                                {{ signupform.confirm_password|safe }}
+                                {{ signupform.confirm_password.error }}
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-center"><button type="submit" class="btn btn-primary">Sign Up</button></p>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

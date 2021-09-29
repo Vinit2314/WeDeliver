@@ -45,10 +45,7 @@ input, textarea {
   color: #788188;
 }
 
-.price div, 
-#pickuppoint b, 
-#deliverypoint b,
-#modeofpayment b {
+.price div, #pickuppoint b, #deliverypoint b, #modeofpayment b {
   margin-left: 0.3rem;
 }
 
@@ -151,6 +148,24 @@ input, textarea {
   font-size: 13px;
   /* font-family: 'Font Awesome 5 Free';
     font-weight: 900; */
+}
+
+.rememberme {
+  margin-left: 10px;
+  width: 10px;
+  height: 10px;
+}
+
+.font_size_10 {
+  font-size: 10px;
+}
+
+.font_size_30 {
+  font-size: 30px
+}
+
+.float_right {
+  float: right;
 }
 
 .hr-margin {
