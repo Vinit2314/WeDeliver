@@ -8,7 +8,6 @@ $(document).ready(function () {
         $('#loginModal').modal('show');
     })
 
-
     // Location Modal
     $('#locationButton').click(function () {
         $('#locationModal').modal('show');
@@ -18,7 +17,6 @@ $(document).ready(function () {
     $('#signinButton').click(function () {
         $('#signinModal').modal('show');
     });
-
 });
 
 //google map
@@ -408,6 +406,7 @@ function razorpay() {
         e.preventDefault();
     }
 }
+
 function backpage(){
     history.back()
 }

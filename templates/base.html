@@ -38,16 +38,21 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="home">Home</a>
+                        <a class="nav-link {% if nbar == 'home' %} active{% endif %}" aria-current="page" href="home">Home</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                        </li>
+                    {% else %}  
+                        <li class="nav-item">
+                            <a class="nav-link {% if nbar == 'order' %} active{% endif %} " href="orders">Orders</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if nbar == 'aboutus' %} active{% endif %} " href="aboutus">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Orders</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="aboutus">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contactus">Contact Us</a>
+                        <a class="nav-link {% if nbar == 'contactus' %} active{% endif %} " href="contactus">Contact Us</a>
                     </li>
                 </ul>
             </div>
@@ -57,10 +62,26 @@
                         <a class="nav-link" id="locationButton" data-bs-toggle="modal" data-bs-target="#locationModal"
                             href="#"> <i class="fas fa-map-marker-alt"></i> Set Location</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="loginButton" data-bs-toggle="modal" data-bs-dismiss="navbar"
-                            data-bs-target="#loginModal" href="#"><i class="fas fa-user-circle"></i> {{user}}</a>
-                    </li>
+                    {% if user.is_authenticated %}
+                            <ul class="navbar-nav">
+                              <li class="nav-item dropdown">
+                                <span class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                   {{user.username}}
+                                </span>
+                                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDarkDropdownMenuLink">
+                                  <li><a class="dropdown-item" href="profile">My Profile</a></li>
+                                  <li><a class="dropdown-item" href="orders">My Order</a></li>
+                                  <li><a class="dropdown-item" href="logout">Logout <i class="fas fa-sign-out-alt"></i></a></li>
+                                </ul>
+                              </li>
+                            </ul>  
+                        
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="loginButton" data-bs-toggle="modal" data-bs-dismiss="navbar"
+                                data-bs-target="#loginModal"  href="#"><i class="fas fa-user-circle"></i> Log in</a>    
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -86,16 +107,16 @@
                                 </div>
                                 <div class="col col-sm-2">
                                     <button type="button" class="btn-close font_size_10  float_right" data-bs-dismiss="modal"
-                                        aria-label="Close" click="myFunction()"></button>
+                                        aria-label="Close"></button>
                                 </div>
                             </div>
-                            <form id="loginform" action="" method="POST" autocomplete="off">
+                            <form id="loginform" action="" method="POST">
                                 {% csrf_token %}
                                 <div class="row">
                                 {{ loginform.non_field_errors }}
                                     <div class="col-12 mt-3" id="user_name">
-                                            {{ loginform.user_name|safe }}
-                                            {{ loginform.user_name.error }}
+                                            {{ loginform.username|safe }}
+                                            {{ loginform.username.error }}
                                     </div>
                                     <div class="col-12 mt-3" id="password">
                                             {{ loginform.password|safe }}
@@ -109,7 +130,7 @@
                                     </div>
                                 </div>
                                 <div class="text-center mt-3">
-                                    <p><button type="submit" class="btn btn-primary mt-2 font_size_10">LogIn</button></p>
+                                    <button type="submit" class="btn btn-primary mt-2 mb-2 font_size_10">Log In</button>
                                 </div>
                                 <div class="login-hr">
                                     <p>or</p>
@@ -127,8 +148,13 @@
                                 </div>
                                 <div class="text-center mt-3 font_size_10">
                                     <span>New Users?<a id="signinButton" data-bs-toggle="modal"
-                                            data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
+                                            data-bs-target="#signinModal" data-bs-dismiss="modal" href="signup"> Create
                                             Account</a></span>
+                                </div>
+                                <div>
+                                    {% for message in messages %}
+                                        {{ message }}
+                                    {% endfor %}
                                 </div>
                             </form>
                         </div>
@@ -198,29 +224,34 @@
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-center"><button type="submit" class="btn btn-primary">Sign Up</button></p>
+                            <p class="text-center"><button type="submit" id="a" class="btn btn-primary">Sign Up</button></p>
+                        </div>
+                        <div>
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    {% if nbar == 'home' %}
+        <div class="home-img-background imagepadding">
+            <div class="container">
+                {% block content %} {% endblock content %}
+            </div>
+        </div>
+    {% elif nbar == 'contactus' %} 
+        <div>
+            {% block content3 %} {% endblock content3 %}
+        </div>
+    {% else %}
+        <div class="container">
+            {% block content2 %} {% endblock content2 %}
+        </div>
+    {% endif %}
 
-<div class="home-img-background">
-    <div class="container">
-        {% block content %} {% endblock content %}
-    </div>
-</div>
-
-<div class="container">
-    {% block content2 %} {% endblock content2 %}
-</div>
-
-<div class="container">
-    {% block content3 %} {% endblock content3 %}
-</div>
-
-    {% block content4 %} {% endblock content4 %}
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/popper.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.min.js' %}"></script>

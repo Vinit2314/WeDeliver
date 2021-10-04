@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% load static %} 
+{% block title %}Map{% endblock title %}
+{% block content2 %}
+
+<div class="row top pt-4">
+    <div class="col-12 col-sm-4">
+        <!-- <div class="searchBox mb-4"></div> -->
+        <!-- <input  type="text" id="auto" name="auto" class="search-outer form-control as-input" placeholder="eg.Mumbai..." required="" spellcheck="false" > -->
+        <div class="card mapcard">
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ map_form.non_field_errors }}
+                <img class="card-img-top "
+                    src="{% static 'media/mapformcard.jpg' %}"
+                    alt="Card image">
+                <div class="scrollbar">
+                    <div class="card-body">
+                        <div id="pickuppoint">
+                            <b>Pickup Point</b>
+                            <div class="name1">
+                                {{ map_form.pickup_point_name|safe }}
+                                {{ map_form.pickup_point_name.error }}
+                            </div>
+                            <div class="address1">
+                                {{ map_form.pickup_point_address|safe }}
+                                {{ map_form.pickup_point_address.error }}
+                            </div>
+                            <div class="number1">
+                                {{ map_form.pickup_point_phone_number|safe }}
+                                {{ map_form.pickup_point_phone_number.error }}
+                            </div>
+                        </div>
+                        <div class="mt-4" id="deliverypoint">
+                            <b>Delivery Point</b>
+                            <div class="name2">
+                                {{ map_form.delivery_point_name|safe }}
+                                {{ map_form.delivery_point_name.error }}
+                            </div>
+                            <div class="address2">
+                                {{ map_form.delivery_point_address|safe }}
+                                {{ map_form.delivery_point_address.error }}
+                            </div>
+                            <div class="number2">
+                                {{ map_form.delivery_point_phone_number|safe }}
+                                {{ map_form.delivery_point_phone_number.error }}
+                            </div>
+                        </div>
+                        <div class="mt-4" id="kg">
+                            Weight in Kilograms : {{ map_form.weight|safe }}
+                            {{ map_form.weight.error }}
+                        </div>
+                        <div class="mt-4" id="modeofpayment">
+                            <b>Mode of Payment</b>
+                            {% for map in map_form.mode_of_payment %}
+                                <div class="mt-2">
+                                    {{map|safe}}
+                                    {{map.errors}}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6 price">
+                                <div class="mt-4" id="price" name="amount">Amt : 0 ₹</div>
+                            </div>
+                            <div class="col-6 mt-3 placeorder">
+                                <input class="btn btn-success" type="submit" value="Proceed">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="mt-4"></div>
+    </div>
+    <div class="col col-sm-8 d-none d-sm-block">
+        <div id='map'></div>
+    </div>
+</div>
+
+
+<!-- <div class="container-fluid">
+    <h1>Find The Distance Between Two Places.</h1>
+    <p>This App Will Help You Calculate Your Travelling Distances.</p>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label for="from" class="col-xs-2 control-label"><i class="far fa-dot-circle"></i></label>
+            <div class="col-xs-4">
+                <input type="text" id="from" placeholder="Origin" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+
+            <label for="to" class="col-xs-2 control-label"><i class="fas fa-map-marker-alt"></i></label>
+            <div class="col-xs-4">
+                <input type="text" id="to" placeholder="Destination" class="form-control">
+            </div>
+
+        </div>
+
+    </form>
+
+    <div class="col-xs-offset-2 col-xs-10">
+        <button class="btn btn-info btn-lg " onclick="calcRoute();"><i class="fas fa-map-signs"></i></button>
+    </div>
+</div>
+<div class="container-fluid">
+    <div id="googleMap">
+
+    </div>
+    <div id="output">
+
+    </div>
+</div> -->
+
+{% endblock content2 %}

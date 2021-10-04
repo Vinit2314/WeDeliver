@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'packagedelivery',
+    'WeDeliver',
     'widget_tweaks',
     'django.contrib.sites',
     'allauth',
@@ -139,7 +139,7 @@ STATICFILES_DIRS = [
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/packagedelivery/"
+LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/WeDeliver/"
 
 
 # Default primary key field type
