@@ -40,16 +40,19 @@ def signupform(request):
 def loginform(request):
     login_form = login_Form(request.POST)
     context['loginform'] = login_form
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    print('in')
+    global username
+    if request.POST.get('username') != None:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
 
-        user = auth.authenticate(username=username, password=password)
+            user = auth.authenticate(username=username, password=password)
 
-        if user is not None:
-            auth.login(request,user)
-        else:
-            messages.error(request,"invalid credentials")
+            if user is not None:
+                auth.login(request,user)
+            else:
+                messages.error(request,"invalid credentials")
 
 def logout(request):
     auth.logout(request)
@@ -66,8 +69,7 @@ def map(request):
     loginform(request)
     signupform(request)
     context['nbar'] = 'map'
-    # context['google_map_key'] = settings.GOOGLE_API_KEY
-    context['tomtom_map_key'] = settings.TOMTOM_API_KEY
+    context['google_map_key'] = settings.GOOGLE_API_KEY
     context['razorpay_api_key'] = settings.RAZORPAY_KEY
     map_form = maps(request.POST)
     # if map_form.is_valid():
@@ -127,6 +129,9 @@ def orders(request):
     loginform(request)
     signupform(request)
     context['nbar'] = 'orders'
+    orders = order.objects.all()
+    context['orders'] = orders
+    context['username'] = username
     return render(request, "orders.html", context)
 
 def profile(request):
@@ -148,6 +153,7 @@ def success(request):
     order_info.weight = kg
     order_info.mode_of_payment = mode_of_payment
     order_info.amount = amt
+    order_info.username = username
     if mode_of_payment == "Pay on Delivery":
         order_info.order_id = order_id
     else:

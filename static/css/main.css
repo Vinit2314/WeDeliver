@@ -12,10 +12,6 @@ input, textarea {
   box-shadow: none!important;
 }
 
-.imagepadding {
-  padding: 7.4rem;
-}
-
 .map-form {
   border: none;
   border-bottom: 1px solid #ced4da!important;
@@ -103,17 +99,9 @@ input, textarea {
 
 /*map*/
 
-#map {
+#googleMap {
   width: 100%;
   height: 480px;
-}
-
-/*map output box*/
-
-#output {
-  text-align: center;
-  font-size: 2em;
-  margin: 20px auto;
 }
 
 #mode {

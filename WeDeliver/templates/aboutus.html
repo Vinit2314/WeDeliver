@@ -1,56 +1,48 @@
-{% extends 'Base.html' %} 
+{% extends 'Base.html' %}
 
-{% block title %}About Us{% endblock title %} 
+{% load static %}
+{% block title %}About Us{% endblock title %}
 
 {% block content2 %}
 <div class="top">
-<div class="about-section">
-  <h1>About Us</h1>
-  <p>Some text about who we are and what we do.</p>
-  <p>Resize the browser window to see that this page is responsive by the way.</p>
-</div>
-
-<h2 class="text-center">Our Team</h2>
-<div class="row">
-  <div class="column">
-    <div class="card_aboutus">
-      <img src="/w3images/team1.jpg" alt="Jane" style="width:100%">
-      <div class="container">
-        <h2>Jane Doe</h2>
-        <p class="title">CEO & Founder</p>
-        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-        <p>jane@example.com</p>
-        <p><button class="button">Contact</button></p>
-      </div>
-    </div>
+  <div class="about-section">
+    <h1>About Us</h1>
+    <p></p>
+    <p></p>
   </div>
 
-  <div class="column">
-    <div class="card_aboutus">
-      <img src="/w3images/team2.jpg" alt="Mike" style="width:100%">
-      <div class="container">
-        <h2>Mike Ross</h2>
-        <p class="title">Art Director</p>
-        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-        <p>mike@example.com</p>
-        <p><button class="button">Contact</button></p>
+  <h2 class="text-center">Our Team</h2>
+  <div class="row">
+    <div class="col col-sm-2 d-none d-sm-block"></div>
+    <div class="col col-sm-4">
+      <div class="card card_aboutus">
+        <img src="https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png" alt="Tanmay" style="width:15rem;display: block;
+        margin: 0 auto;">
+        <div class="container">
+          <h2>Tanmay Shinde</h2>
+          <p class="title"></p>
+          <p></p>
+          <p>tanmayshinde79@example.com</p>
+          <p><button class="button">Contact</button></p>
+        </div>
       </div>
     </div>
-  </div>
-  
-  <div class="column">
-    <div class="card_aboutus">
-      <img src="/w3images/team3.jpg" alt="John" style="width:100%">
-      <div class="container">
-        <h2>John Doe</h2>
-        <p class="title">Designer</p>
-        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-        <p>john@example.com</p>
-        <p><button class="button">Contact</button></p>
+
+    <div class="col col-sm-4">
+      <div class="card card_aboutus">
+        <img src="https://cdn.iconscout.com/icon/free/png-256/user-1648810-1401302.png" alt="Adesh" style="width:15rem;display: block;
+        margin: 0 auto;">
+        <div class="container">
+          <h2>Adesh Zinjad</h2>
+          <p class="title"></p>
+          <p></p>
+          <p>adeshzinjad@example.com</p>
+          <p><button class="button">Contact</button></p>
+        </div>
       </div>
     </div>
+    <div class="col col-sm-2 d-none d-sm-block"></div>
   </div>
 </div>
-</div>
-  
+
 {% endblock content2 %}
