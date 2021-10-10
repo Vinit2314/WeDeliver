@@ -91,7 +91,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
         'USER': 'postgres',
-        'PASSWORD': '9987793650',
+        'PASSWORD': 'Vinit@2001',
     }
 }
 
@@ -147,8 +147,8 @@ LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/WeDeliver/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GOOGLE_API_KEY = 'AIzaSyDzXEs-EuKe3-pBGP5UB-NUNa20LLTnmXs'
+GOOGLE_API_KEY = 'AIzaSyCpmSeGzt1DzJz3DQv1RcYHmCGfcpbHHSQ'
 
-RAZORPAY_KEY = 'rzp_test_YeUQJn3xhNMSok'
+RAZORPAY_KEY = 'rzp_test_sXjQkh2LTOtntz'
 
-RAZORPAY_SECRET_KEY = 'YMTDA6EkqhUMEm5txnBuItQs'
+RAZORPAY_SECRET_KEY = 'jMUlq8v0rkZyJVSGnqNEfGZi'

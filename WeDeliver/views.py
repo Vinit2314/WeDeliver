@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 import string
 import random
-import time
 
 context = {}
 
