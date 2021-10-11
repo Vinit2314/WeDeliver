@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 import string
 import random
-import time
 
 context = {}
 
@@ -40,10 +39,9 @@ def signupform(request):
 def loginform(request):
     login_form = login_Form(request.POST)
     context['loginform'] = login_form
-    print('in')
-    global username
     if request.POST.get('username') != None:
         if request.method == 'POST':
+            global username
             username = request.POST['username']
             password = request.POST['password']
 
@@ -59,9 +57,8 @@ def logout(request):
     return redirect('home')
 
 def home(request):
-    loginform(request)
+    loginform(request)  
     signupform(request)
-    context['nbar'] = 'home'
     return render(request, 'home.html', context)
 
 
@@ -75,7 +72,6 @@ def map(request):
     # if map_form.is_valid():
     #     map_form.save()
     context['map_form'] = map_form
-    map_form.fields['mode_of_payment'].initial = ['Credit/Debit Card']
     if request.GET.get('amount') != None:
         global name1, address1, number1, name2, address2, number2, kg, amt, mode_of_payment, order_id, payment
         name1 = request.GET.get('name1')
@@ -111,28 +107,34 @@ def map(request):
         return render(request, 'confirm.html', context)
     return render(request, 'map.html', context)
 
-
 def aboutus(request):
     loginform(request)
     signupform(request)
-    context['nbar'] = 'aboutus'
     return render(request, "aboutus.html", context)
 
 
 def contactus(request):
     loginform(request)
     signupform(request)
-    context['nbar'] = 'contactus'
     return render(request, "contactus.html", context)
 
 def orders(request):
     loginform(request)
     signupform(request)
-    context['nbar'] = 'orders'
-    orders = order.objects.all()
-    context['orders'] = orders
-    context['username'] = username
+    orders_completed = order.objects.filter(username=username).filter(flag='CM')
+    orders_cancel = order.objects.filter(username=username).filter(flag='C')
+    orders_pending = order.objects.filter(username=username).filter(flag='P')
+    context['orders_completed'] = orders_completed
+    context['orders_cancel'] = orders_cancel
+    context['orders_pending'] = orders_pending
     return render(request, "orders.html", context)
+    
+def cancel_order(request, pk):
+    order_info = order.objects.get(pk=pk)   
+    order_info.flag = 'C'
+    order_info.save()
+    messages.info(request, "Order canceled")
+    return redirect("my-orders")
 
 def profile(request):
     loginform(request)
@@ -154,12 +156,15 @@ def success(request):
     order_info.mode_of_payment = mode_of_payment
     order_info.amount = amt
     order_info.username = username
+    order_info.flag = 'P'
     if mode_of_payment == "Pay on Delivery":
         order_info.order_id = order_id
+        order_info.payment = 'Pending'
     else:
         for key, value in payment.items():
             if key == 'id':
                 razorpay_order_id = value
                 order_info.order_id = razorpay_order_id
+                order_info.payment = 'Done'
     order_info.save()
     return render(request, 'success.html', context)

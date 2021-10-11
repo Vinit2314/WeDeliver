@@ -46,25 +46,25 @@ class login_Form(forms.Form):
 
 
 class maps(forms.ModelForm):
-    weight = forms.ChoiceField(choices=[('1', 'Up to 1 kg'),
+    weight = forms.ChoiceField(choices=(('1', 'Up to 1 kg'),
                                     ('5', 'Up to 5 kg'),
                                     ('10', 'Up to 10 kg'),
                                     ('15', 'Up to 15 kg'),
-                                    ('20', 'Up to 20 kg')],
+                                    ('20', 'Up to 20 kg')),
                                     widget=forms.Select(attrs={'id': 'kg_value',
                                                                'onchange': 'price_map_info();',
                                                                'class' : 'btn dropdown-toggle btn-sm map-form-select'}))
 
     mode_of_payment = forms.ChoiceField(widget=forms.RadioSelect(attrs={'id': 'mode_of_payment',
                                                                         'onchange': 'price_map_info();'}),
-                                                                        choices=[('Credit/Debit Card', 'Credit/Debit Card'),
+                                                                        choices=(('Credit/Debit Card', 'Credit/Debit Card'),
                                                                                 ('Net-Banking','Net-Banking'),
                                                                                 ('UPI/QR','UPI/QR'),
-                                                                                ('Pay on Delivery', 'Pay on Delivery')])
+                                                                                ('Pay on Delivery', 'Pay on Delivery')))
 
     class Meta:
         model = order
-        exclude = ('weight', 'mode_of_payment', 'amount', 'order_id')
+        exclude = ('weight', 'mode_of_payment', 'amount', 'order_id', 'username', 'flag', 'payment')
         widgets = {
             'pickup_point_name': forms.TextInput(attrs={'id': 'name1',
                                                             'onchange': 'price_map_info();',

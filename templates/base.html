@@ -1,9 +1,10 @@
-<!doctype html> 
+<!doctype html>
 {% load static %}
 {% load socialaccount %}
 {% providers_media_js %}
 
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -30,19 +31,24 @@
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light scrolling-navbar">
         <div class="container">
             <a class="navbar-brand" href="home">We<span class="text-warning">Deliver</span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link {% if nbar == 'home' %} active{% endif %}" aria-current="page" href="home">Home</a>
+                        <a class="nav-link {% if request.path == '/WeDeliver/home' or request.path == '/WeDeliver/' %} active {% endif %}"
+                            aria-current="page" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if nbar == 'aboutus' %} active{% endif %} " href="aboutus">About Us</a>
+                        <a class="nav-link {% if request.path == '/WeDeliver/aboutus' %} active {% endif %} "
+                            href="{% url 'aboutus' %}">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if nbar == 'contactus' %} active{% endif %} " href="contactus">Contact Us</a>
+                        <a class="nav-link {% if request.path == '/WeDeliver/contactus' %} active {% endif %} "
+                            href="{% url 'contactus' %}">Contact Us</a>
                     </li>
                 </ul>
             </div>
@@ -53,24 +59,28 @@
                             href="#"> <i class="fas fa-map-marker-alt"></i> Set Location</a>
                     </li>
                     {% if user.is_authenticated %}
-                            <ul class="navbar-nav">
-                              <li class="nav-item dropdown">
-                                <span class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                   {{user.username}}
-                                </span>
-                                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDarkDropdownMenuLink">
-                                  <li><a class="dropdown-item" href="profile">My Profile</a></li>
-                                  <li><a class="dropdown-item" href="orders">My Order</a></li>
-                                  <li><a class="dropdown-item" href="logout">Logout <i class="fas fa-sign-out-alt"></i></a></li>
-                                </ul>
-                              </li>
-                            </ul>  
-                        
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" id="loginButton" data-bs-toggle="modal" data-bs-dismiss="navbar"
-                                data-bs-target="#loginModal"  href="#"><i class="fas fa-user-circle"></i> Log in</a>    
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <span class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{user.username}}
+                            </span>
+                            <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="dropdown-item {% if request.path == '/WeDeliver/profile' %} active{% endif %}"
+                                        href="{% url 'profile' %}">My Profile</a></li>
+                                <li><a class="dropdown-item {% if request.path == '/WeDeliver/my-orders' %} active{% endif %}"
+                                        href="{% url 'my-orders' %}">My Order</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout <i
+                                            class="fas fa-sign-out-alt"></i></a></li>
+                            </ul>
                         </li>
+                    </ul>
+
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" id="loginButton" data-bs-toggle="modal" data-bs-dismiss="navbar"
+                            data-bs-target="#loginModal" href="#"><i class="fas fa-user-circle"></i> Log in</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
@@ -85,8 +95,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col col-sm-5 d-none d-sm-block">
-                            <img src="{% static 'media/login.png' %}" class="img-fluid d-none d-sm-block"
-                                alt="login">
+                            <img src="{% static 'media/login.png' %}" class="img-fluid d-none d-sm-block" alt="login">
                         </div>
                         <div class="col-12 col-sm-7">
                             <div class="row">
@@ -96,54 +105,56 @@
                                     </b>
                                 </div>
                                 <div class="col col-sm-2">
-                                    <button type="button" class="btn-close font_size_10  float_right" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                    <button type="button" class="btn-close font_size_10  float_right"
+                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                             </div>
                             <form id="loginform" action="" method="POST">
                                 {% csrf_token %}
                                 <div class="row">
-                                {{ loginform.non_field_errors }}
+                                    {{ loginform.non_field_errors }}
                                     <div class="col-12 mt-3" id="username">
-                                            {{ loginform.username|safe }}
-                                            {{ loginform.username.error }}
+                                        {{ loginform.username|safe }}
+                                        {{ loginform.username.error }}
                                     </div>
                                     <div class="col-12 mt-3" id="pass_word">
-                                            {{ loginform.password|safe }}
-                                            {{ loginform.password.error }}
+                                        {{ loginform.password|safe }}
+                                        {{ loginform.password.error }}
                                     </div>
                                     <div class="col-6 mt-3" id="remenber_me">
-                                        {{ loginform.remember_me|safe }}{{ loginform.remember_me.errors }}<span class="font_size_10"> Remember Me </span>
+                                        {{ loginform.remember_me|safe }}{{ loginform.remember_me.errors }}<span
+                                            class="font_size_10"> Remember Me </span>
                                     </div>
                                     <div class="col-6 mt-4">
                                         <a href="#" class="font_size_10 float_right">Forget Password?</a>
                                     </div>
                                 </div>
                                 <div class="text-center mt-3">
-                                    <button type="submit" class="btn btn-primary mt-2 mb-2 font_size_10">Log In</button>
+                                    <a href="#"><button type="submit" class="btn btn-primary mt-2 mb-2 font_size_10">Log
+                                            In</button></a>
                                 </div>
                                 <div class="login-hr">
                                     <p>or</p>
                                 </div>
                                 <p class="text-center font_size_10">LogIn with</p>
                                 <div class="text-center">
-                                <a href="{% provider_login_url 'google' %}">
+                                    <a href="{% provider_login_url 'google' %}">
                                         <span><img src="{% static 'media/googlelogo.png' %}"
                                                 class="btn login-logo"></span>
-                                </a>
-                                <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
-                                    <span><img src="{% static 'media/facebooklogo.png' %}"
-                                            class="btn login-logo"></span>
-                                </a>
+                                    </a>
+                                    <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
+                                        <span><img src="{% static 'media/facebooklogo.png' %}"
+                                                class="btn login-logo"></span>
+                                    </a>
                                 </div>
                                 <div class="text-center mt-3 font_size_10">
                                     <span>New Users?<a id="signinButton" data-bs-toggle="modal"
-                                            data-bs-target="#signinModal" data-bs-dismiss="modal" href="signup"> Create
+                                            data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
                                             Account</a></span>
                                 </div>
                                 <div>
                                     {% for message in messages %}
-                                        {{ message }}
+                                    {{ message }}
                                     {% endfor %}
                                 </div>
                             </form>
@@ -214,11 +225,12 @@
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-center"><button type="submit" id="a" class="btn btn-primary">Sign Up</button></p>
+                            <p class="text-center"><button type="submit" id="a" class="btn btn-primary">Sign Up</button>
+                            </p>
                         </div>
                         <div>
                             {% for message in messages %}
-                                {{ message }}
+                            {{ message }}
                             {% endfor %}
                         </div>
                     </form>
@@ -226,20 +238,21 @@
             </div>
         </div>
     </div>
-    {% if nbar == 'home' %}
-        <div class="home-img-background">
-            <div class="container">
-                {% block content %} {% endblock content %}
-            </div>
-        </div>
-    {% elif nbar == 'contactus' %} 
-        <div>
-            {% block content3 %} {% endblock content3 %}
-        </div>
-    {% else %}
+
+    {% if request.path == '/WeDeliver/home' or request.path == '/WeDeliver/' %}
+    <div class="home-img-background">
         <div class="container">
-            {% block content2 %} {% endblock content2 %}
+            {% block content %} {% endblock content %}
         </div>
+    </div>
+    {% elif request.path == '/WeDeliver/contactus' %}
+    <div>
+        {% block content3 %} {% endblock content3 %}
+    </div>
+    {% else %}
+    <div class="container">
+        {% block content2 %} {% endblock content2 %}
+    </div>
     {% endif %}
 
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -248,13 +261,15 @@
     <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&libraries=places"></script>
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&libraries=places"></script>
     {{ razorpay_api_key|json_script:"razorpay_api_key" }}
     {% if payment %}
-        {{ payment|json_script:"payment"}}
+    {{ payment|json_script:"payment"}}
     {% endif %}
     <script type="text/javascript" src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.js' %}"></script>
 </body>
+
 </html>

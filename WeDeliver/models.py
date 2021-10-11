@@ -12,3 +12,8 @@ class order(models.Model):
     amount = models.IntegerField()  
     order_id = models.CharField(max_length=20, unique=True)
     username = models.CharField(max_length=20)
+    flag = models.CharField(max_length=2, choices=(('CM' , 'Completed'),
+                                                    ('P', 'Pending'),
+                                                    ('C', 'Canceled')))
+    payment = models.CharField(max_length=10, choices=(('Pending' , 'Pending'),
+                                                         ('Done' ,'Done')) )                                

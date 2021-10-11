@@ -17,6 +17,11 @@ $(document).ready(function () {
     $('#signinButton').click(function () {
         $('#signinModal').modal('show');
     });
+
+    //Cancel Order Modal
+    $('cancel_order').click(function() {
+        $('#cancelorderModal').modal('show');
+    });
 });
 
 //google map

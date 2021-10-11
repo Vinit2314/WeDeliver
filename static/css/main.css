@@ -370,6 +370,12 @@ html {
   background-color: #555;
 }
 
+@media screen and (min-width: 576px){
+  .modal-dialog-cancel-order {
+    max-width: 400px;
+}
+}
+
 @media screen and (max-width: 650px) {
   .column {
     width: 100%;
