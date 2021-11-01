@@ -1,0 +1,241 @@
+.top {
+  margin-top: 4rem;
+}
+
+.home-img-background {
+  background-image: url("/static/media/homebackground.jpg");
+  background-size: cover;
+}
+
+input, textarea {
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important;
+}
+
+.map-form {
+  border: none;
+  border-bottom: 1px solid #ced4da!important;
+  font-size: 0.9rem;
+}
+
+.map-form-select {
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important;
+  float: right;
+  border: none;
+  border-bottom: 1px solid #ced4da!important;
+  color: #788188;
+}
+
+#kg {
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #788188;
+}
+
+#modeofpayment label {
+  list-style-type: none;
+  font-size: 0.9rem;
+  color: #788188;
+  padding: 0px 0px 0px 6px;
+}
+
+.price {
+  font-size: 0.9rem;
+  color: #788188;
+}
+
+.price div, #pickuppoint b, #deliverypoint b, #modeofpayment b {
+  margin-left: 0.3rem;
+}
+
+.placeorder {
+  padding: 0px;
+}
+
+.placeorder input {
+  float: right;
+  margin-right: 0.8rem;
+}
+
+.mapcard {
+  height: 480px;
+}
+
+.center {
+  position: relative;
+  width: 508px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  transform: translate(-50%, -50%);
+}
+
+.scrollbar {
+  height: 265px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(221, 221, 223);
+  border-radius: 20px;
+  border: 3px solid #ffffff;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(162, 162, 165);
+}
+
+.card_home {
+  cursor: pointer;
+  box-shadow: 0 6px 10px rgba(173, 173, 173, 0.8);
+}
+
+.card-link {
+  text-decoration: none;
+}
+
+.card_home:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(83, 83, 83, 0.8);
+  transition: 0.5s;
+}
+
+/*map*/
+
+#googleMap {
+  width: 100%;
+  height: 480px;
+}
+
+#mode {
+  color: black;
+}
+
+.login-hr {
+  display: flex;
+  flex-direction: row;
+  opacity: 0.4;
+  font-size: 13px;
+}
+
+.login-hr:before, .login-hr:after {
+  content: "";
+  flex: 1 1;
+  border-bottom: 1px solid #000;
+  /* box-shadow: 0 0 25px 2px #141414; */
+  margin: auto;
+  background-color: #fcfafa;
+  margin-top: 10px;
+}
+
+.img-fluid {
+  height: 100%;
+}
+
+.login-logo {
+  padding: 5px 1px;
+  width: 40px;
+}
+
+.login {
+  border: none;
+  border-bottom: 1px solid #ced4da!important;
+  font-size: 13px;
+  /* font-family: 'Font Awesome 5 Free';
+    font-weight: 900; */
+}
+
+.rememberme {
+  margin-left: 10px;
+  width: 10px;
+  height: 10px;
+}
+
+.font_size_10 {
+  font-size: 10px;
+}
+
+.font_size_30 {
+  font-size: 30px;
+}
+
+.float_right {
+  float: right;
+}
+
+.hr-margin {
+  margin: 0px;
+}
+
+.rounded-circle {
+  width: 170px;
+  height: 200px;
+}
+
+.marginleft {
+  margin-left: 5rem;
+}
+
+.margintop {
+  margin-top: 5rem;;
+}
+
+.contact h2, .contact h3{
+  color: #00bcd4;
+}
+
+.contact h3 svg {
+  color: #ffffff;
+}
+
+.contact p {
+  color: #ffffff;
+}
+.contact {
+  display: flex;
+  justify-content: center;
+  background-image: url("/static/media/contactus.jpg");
+  background-size: cover;
+}
+
+.contactus input[type="submit"] {
+  width: 90px;
+  background: #00bcd4; 
+  color: #fff;
+  border: none;
+  padding: 8px;
+  font-size: 18px;
+  border-radius: 5px;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.card_aboutus {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.about-section {
+  padding: 50px;
+  text-align: center;
+  background-color: #474e5d;
+  color: white;
+}

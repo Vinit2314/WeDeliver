@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import *
 from django.conf import settings
@@ -9,13 +10,16 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 import string
 import random
+import ast
 
 context = {}
+
+context['google_map_key'] = settings.GOOGLE_API_KEY
 
 def signupform(request):
     signup_form = signup_Form(request.POST)
     context['signupform'] = signup_form
-    if request.POST.get('first_name') != None:
+    if request.POST.get('password') != None and request.POST.get('first_name') != None:
         if request.method == 'POST':
             first_name = request.POST['first_name']
             last_name = request.POST['last_name']
@@ -32,7 +36,7 @@ def signupform(request):
                 else:
                     user = User.objects.create(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
                     if signup_form.is_valid():
-                        user.save() 
+                        user.save()
             else : 
                 messages.error(request,'Password dose not match') 
 
@@ -41,12 +45,10 @@ def loginform(request):
     context['loginform'] = login_form
     if request.POST.get('username') != None:
         if request.method == 'POST':
-            global username
+            global user
             username = request.POST['username']
             password = request.POST['password']
-
             user = auth.authenticate(username=username, password=password)
-
             if user is not None:
                 auth.login(request,user)
             else:
@@ -57,7 +59,8 @@ def logout(request):
     return redirect('home')
 
 def home(request):
-    loginform(request)  
+    global userid
+    loginform(request)
     signupform(request)
     return render(request, 'home.html', context)
 
@@ -66,7 +69,6 @@ def map(request):
     loginform(request)
     signupform(request)
     context['nbar'] = 'map'
-    context['google_map_key'] = settings.GOOGLE_API_KEY
     context['razorpay_api_key'] = settings.RAZORPAY_KEY
     map_form = maps(request.POST)
     # if map_form.is_valid():
@@ -112,40 +114,111 @@ def aboutus(request):
     signupform(request)
     return render(request, "aboutus.html", context)
 
-
-def contactus(request):
+@csrf_exempt
+def Contactus(request, contactus_id):
     loginform(request)
     signupform(request)
-    return render(request, "contactus.html", context)
+    contact_us = contactus_Form(request.POST)
+    context['contact_us'] = contact_us
+    if request.method == 'POST':
+        contactus_info = contactus()
+        if contactus_id == 0:
+            contactus_info.user_id = None
+        else:
+            contactus_info.user_id = contactus_id
+        contactus_info.name = request.POST['name']
+        contactus_info.email = request.POST['email']
+        contactus_info.message = request.POST['message']
+        contactus_info.save()
+        messages.info(request, "Message Send")
+        return redirect("contactus", contactus_id)
+    else:
+        return render(request, "contactus.html", context)
 
-def orders(request):
+def orders(request, user_id):
     loginform(request)
     signupform(request)
-    orders_completed = order.objects.filter(username=username).filter(flag='CM')
-    orders_cancel = order.objects.filter(username=username).filter(flag='C')
-    orders_pending = order.objects.filter(username=username).filter(flag='P')
+    orders_completed = order.objects.filter(user_id = user_id).filter(flag='CM')
+    orders_cancel = order.objects.filter(user_id = user_id).filter(flag='C')
+    orders_pending = order.objects.filter(user_id = user_id).filter(flag='P')
     context['orders_completed'] = orders_completed
     context['orders_cancel'] = orders_cancel
     context['orders_pending'] = orders_pending
     return render(request, "orders.html", context)
     
-def cancel_order(request, pk):
-    order_info = order.objects.get(pk=pk)   
-    order_info.flag = 'C'
-    order_info.save()
-    messages.info(request, "Order canceled")
-    return redirect("my-orders")
+def cancel_order(request, cancel_id, user_id):
+    order_info = order.objects.get(pk=cancel_id)
+    client = razorpay.Client(
+                auth=(settings.RAZORPAY_KEY, settings.RAZORPAY_SECRET_KEY))
+    order_id = order_info.order_id
+    if order_info.mode_of_payment == 'Pay on Delivery':
+        if order_info.payment == "Done":
+            order_info.payment = 'Refund'
+            order_info.flag = 'C'
+            order_info.save()
+            messages.info(request, "Order Canceled Successfully. Your money will be refunded within 5-7 working days")
+        else:
+            order_info.payment = 'Cancel'
+            order_info.flag = 'C'
+            order_info.save()
+            messages.info(request, "Order Canceled Successfully")
+    else:
+        resp_payment_info = client.order.payments(order_id)
+        for key, value in resp_payment_info.items():
+            if key == 'items':
+                payment_info = str(value).replace("[" , '').replace("]" , '')
+                payment_info_dict = ast.literal_eval(payment_info)
+        for key1, value1 in payment_info_dict.items():
+            if key1 == 'id':
+                payment_id = value1
+                order_info.payment = 'Refund'                    
+                payment_amount = order_info.amount * 100
+                client.payment.refund(payment_id, payment_amount)
+                order_info.flag = 'C'
+                order_info.save()
+                messages.info(request, "Order Canceled Successfully. Your money will be refunded within 5-7 working days")
+    return redirect("my-orders", user_id)
 
-def profile(request):
+def Profile(request):
     loginform(request)
     signupform(request)
+    my_profile = profile_Form(request.POST, request.FILES)
+    user = User_Form(request.POST)
+    context['profile'] = my_profile
+    context['User'] = user
     return render(request, "profile.html", context)
 
+def update_profile(request, updateprofile_id1, updateprofile_id2):
+    if request.method == 'POST' or request.method == 'FILES':
+        updateProfile1 = User.objects.get(pk=updateprofile_id1)
+        updateProfile2 = profile.objects.get(pk=updateprofile_id2)
+        updateProfile1.first_name = request.POST['first_name']
+        updateProfile1.last_name = request.POST['last_name']
+        updateProfile1.email = request.POST['email']
+        updateProfile2.phone_no = request.POST['phone_no']
+        updateProfile2.address = request.POST['address']
+        try:
+            if request.POST['image'] == '':
+                pass
+        except:
+            if request.FILES['image'] == '':
+                pass
+            else:
+                updateProfile2.image = request.FILES['image']
+        updateProfile1.save()
+        updateProfile2.save()
+        messages.info(request, "Profile Updated Successfully")
+        return redirect("profile")
+    else:
+        return render(request, "profile.html", context)
+
 @csrf_exempt
-def success(request):
+def success(request, user_id):
     loginform(request)
     signupform(request)
     order_info = order()
+    client = razorpay.Client(
+                auth=(settings.RAZORPAY_KEY, settings.RAZORPAY_SECRET_KEY))
     order_info.pickup_point_name = name1
     order_info.pickup_point_address = address1
     order_info.pickup_point_phone_number = number1
@@ -153,18 +226,25 @@ def success(request):
     order_info.delivery_point_address = address2
     order_info.delivery_point_phone_number = number2
     order_info.weight = kg
-    order_info.mode_of_payment = mode_of_payment
     order_info.amount = amt
-    order_info.username = username
+    order_info.user_id = user_id
     order_info.flag = 'P'
     if mode_of_payment == "Pay on Delivery":
         order_info.order_id = order_id
         order_info.payment = 'Pending'
+        order_info.mode_of_payment = "Pay on Delivery"
     else:
         for key, value in payment.items():
             if key == 'id':
-                razorpay_order_id = value
-                order_info.order_id = razorpay_order_id
+                order_info.order_id = value
                 order_info.payment = 'Done'
+                resp_payment_info = client.order.payments(value)
+        for key1, value1 in resp_payment_info.items():
+            if key1 == 'items':
+                payment_info = str(value1).replace("[" , '').replace("]" , '')
+                a = ast.literal_eval(payment_info)
+        for key2, value2 in a.items():
+            if key2 == 'method':
+                order_info.mode_of_payment = value2
     order_info.save()
     return render(request, 'success.html', context)

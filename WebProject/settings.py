@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-vk5p6s#^t#cjb)q9*)gj6-qb1&c)04j3#@^tlvlp624$fxmf()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -115,6 +115,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -137,10 +142,31 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/')
 ]
 
+MEDIA_URL = '/profilepic/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'profilepic')
+
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = "http://127.0.0.1:8000/WeDeliver/"
+LOGIN_REDIRECT_URL = "http://localhost:8000/WeDeliver/"
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+    'face_book' :{
+        'SCOPE': [
+            'public_profile',
+            'email',
+        ],
+    },
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

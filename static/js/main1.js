@@ -22,6 +22,7 @@ $(document).ready(function () {
     $('cancel_order').click(function() {
         $('#cancelorderModal').modal('show');
     });
+
 });
 
 //google map
@@ -92,6 +93,12 @@ var autocomplete1 = new google.maps.places.Autocomplete(input1, options);
 var input2 = document.getElementById("address2");
 var autocomplete2 = new google.maps.places.Autocomplete(input2, options);
 
+var input3 = document.getElementById("address");
+var autocomplete3 = new google.maps.places.Autocomplete(input3, options);
+
+var input4 = document.getElementById("setaddress");
+var autocomplete3 = new google.maps.places.Autocomplete(input4, options);
+
 //Price calculation and map form info
 function price_map_info() {
     var kg = $('#kg_value').val();
@@ -121,6 +128,11 @@ function price_map_info() {
 function razorpay() {
     var payment = JSON.parse(document.getElementById('payment').textContent);
     var razorpay_api_key = JSON.parse(document.getElementById('razorpay_api_key').textContent);
+    var firstname = JSON.parse(document.getElementById('firstname').textContent);
+    var lastname = JSON.parse(document.getElementById('lastname').textContent);
+    var email = JSON.parse(document.getElementById('email').textContent);
+    var user_id = JSON.parse(document.getElementById('user_id').textContent)
+    var username = firstname + ' ' + lastname
     var amount = payment.amount;
     var currency = payment.currency;
     var order_id = payment.id;
@@ -130,9 +142,9 @@ function razorpay() {
         "currency": currency,
         "name": "WeDeliver",
         "description": "Fast and Secure",
-        "image": "https://images.crowdspring.com/blog/wp-content/uploads/2017/07/27131755/9b475a68-ee0f-4895-8082-2a4706cfeb4b.png",
+        "image": "/static/media/razorpaylogo.png",
         "order_id": order_id,
-        "callback_url":"success",
+        "callback_url":"success/"+user_id,
         // "handler": function (response) {
         //     var payment_id = response.razorpay_payment_id;
         //     sessionStorage.setItem("paymentid", payment_id);
@@ -144,8 +156,8 @@ function razorpay() {
         //     window.location.href = "success";
         // },
         "prefill": {
-            "name": "'Gaurav Kuma'r",
-            "email": "gaurav.kumar@example.com",
+            "name": username,
+            "email": email,
             "contact": "9999999999"
         },
         "notes": {

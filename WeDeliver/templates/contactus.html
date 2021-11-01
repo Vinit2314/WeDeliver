@@ -1,57 +1,121 @@
-{% extends 'Base.html' %} 
+{% extends 'Base.html' %}
 
-{% block title %}Contact Us{% endblock title %} 
+{% block title %}Contact Us{% endblock title %}
 
 {% block content3 %}
-    <section class="contact">
-        <div class="content">
-            <h2 class=" mt-5">Contact Us</h2>
-            <p></p>
-        </div> 
-        <div class=" contact_container">
-            <div class="contactInfo">
-                <div class="box">
-                    <div class="icon"><i class="ri-map-pin-line"></i></div>
-                    <div class="text">
-                        <h3>Address</h3>
-                        <p></p>
-                    </div>
-                </div> 
-                <div class="box">
-                    <div class="icon"><i class="ri-phone-line"></i></div>
-                    <div class="text">
-                        <h3>Phone</h3>
-                        <p>000-000-0000</p>
+<div class="top contact">
+    <div class="container mb-4">
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+          <i class="fas fa-check-circle" style="height: 20; width: 20"></i> {{ message }}.
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        <div class="text-center mt-4 mb-3">
+            <h2>Contact Us</h2>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-6 mb-4 mt-4">
+                <div class="row">
+                    <div class="col-2 col-sm-3"></div>
+                    <div class="col-10 col-sm-9">
+                        <div id="address">
+                            <h3><i class="fas fa-map-marked-alt"></i> Address</h3>
+                            <p>Pillai HOC College of Art, Science and Commerce, Raigad.</p>
+                        </div>
+                        <div id="phonenumber">
+                            <h3><i class="fas fa-phone"></i> Phone Number</h3>
+                            <p>000-000-0000</p>
+                        </div>
+                        <div id="email">
+                            <h3><i class="fas fa-envelope"></i> Email</h3>
+                            <p>wedeliver@gmail.com</p>
+                        </div>
                     </div>
                 </div>
-                <div class="box">
-                    <div class="icon"><i class="ri-mail-line"></i></div>
-                    <div class="text">
-                        <h3>Email</h3>
-                        <p>wedeliver@gmail.com</p>
-                    </div>
-                </div>        
             </div>
-            <div class="contactForm">
-                <form >
-                    <h2>Send Messege</h2>
-                    <div class="inputBox">
-                        <input type="text" name="" required="required">
-                        <span>Full Name</span>
-                    </div>
-                    <div class="inputBox">
-                        <input type="text" name="" required="required">
-                        <span>Email</span>
-                    </div>
-                    <div class="inputBox">
-                        <textarea required="required"></textarea>
-                        <span>Type your Message...</span>
-                    </div>
-                    <div class="inputBox">
-                        <input type="submit" name="" value="Send">
-                    </div>
-                </form>    
+            <div class="col-12 col-lg-6 mt-4">
+                <div class="row">
+                <div class="col-1 col-sm-2"></div>
+                <div class="col-10 col-sm-8 contactus">
+                    {% csrf_token %}
+                    <div class="card p-3">
+                    <form action="" method="POST">
+                        <h2>Send Messege</h2>
+                        <div id="name">
+                            <span>Full Name</span>
+                            {{ contact_us.name }}
+                        </div>
+                        <div id="email">
+                            <span>Email</span>
+                            {{ contact_us.email }}
+                        </div>
+                        <div id="message">
+                            <span>Message</span>
+                            {{ contact_us.message }}
+                        </div>
+                        <div class="mt-4 mb-2">
+                            <input type="submit" name="" value="Send">
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="col-1 col-sm-2"></div>
+                </div>
             </div>
         </div>
-    </section>   
-    {% endblock content3 %}
+    </div>
+</div>
+
+<!-- <section class="contact">
+    <div class="content">
+        <h2 class=" mt-5">Contact Us</h2>
+        <p></p>
+    </div>
+    <div class=" contact_container">
+        <div class="contactInfo">
+            <div class="box">
+                <div class="icon"><i class="ri-map-pin-line"></i></div>
+                <div class="text">
+                    <h3>Address</h3>
+                    <p></p>
+                </div>
+            </div>
+            <div class="box">
+                <div class="icon"><i class="ri-phone-line"></i></div>
+                <div class="text">
+                    <h3>Phone</h3>
+                    <p>000-000-0000</p>
+                </div>
+            </div>
+            <div class="box">
+                <div class="icon"><i class="ri-mail-line"></i></div>
+                <div class="text">
+                    <h3>Email</h3>
+                    <p>wedeliver@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="contactForm">
+            <form>
+                <h2>Send Messege</h2>
+                <div class="inputBox">
+                    <input type="text" name="" required="required">
+                    <span>Full Name</span>
+                </div>
+                <div class="inputBox">
+                    <input type="text" name="" required="required">
+                    <span>Email</span>
+                </div>
+                <div class="inputBox">
+                    <textarea required="required"></textarea>
+                    <span>Type your Message...</span>
+                </div>
+                <div class="inputBox">
+                    <input type="submit" name="" value="Send">
+                </div>
+            </form>
+        </div>
+    </div>
+</section> -->
+{% endblock content3 %}

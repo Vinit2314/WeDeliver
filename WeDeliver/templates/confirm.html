@@ -73,7 +73,7 @@
             <div class="text-center mb-2">
                 <input class="btn btn-primary m-1" type="button" onclick="backpage()" value="Back">
                 {% if map_form.mode_of_payment.value == 'Pay on Delivery' %}
-                    <a href="success"><input class="btn btn-success" type="submit" value="Place Order"></a>
+                    <a href="success/{{user.id}}"><input class="btn btn-success" type="submit" value="Place Order"></a>
                 {% else %}
                     <input class="btn btn-success m-1" type="submit" value="Place Order"
                         onclick="razorpay(), document.getElementById('rzp-button').click()" id="rbutton">

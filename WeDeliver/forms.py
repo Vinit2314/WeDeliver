@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext_lazy as _
 from . models import *
 
@@ -64,7 +63,7 @@ class maps(forms.ModelForm):
 
     class Meta:
         model = order
-        exclude = ('weight', 'mode_of_payment', 'amount', 'order_id', 'username', 'flag', 'payment')
+        exclude = ('user_id', 'weight', 'mode_of_payment', 'amount', 'order_id', 'username', 'flag', 'payment')
         widgets = {
             'pickup_point_name': forms.TextInput(attrs={'id': 'name1',
                                                             'onchange': 'price_map_info();',
@@ -74,8 +73,10 @@ class maps(forms.ModelForm):
                                                             'onchange': 'price_map_info(); calcRoute();',
                                                             'class' : 'form-control map-form mt-2',
                                                             'placeholder' : 'Delivery Location'}),
-            'pickup_point_phone_number' : forms.TextInput(attrs={'id': 'number1', 'onchange': 'price_map_info();', 'class' : 'form-control map-form mt-2',
-                                                            'placeholder' : 'Phone Number'}),
+            'pickup_point_phone_number' : forms.TextInput(attrs={'id': 'number1', 
+                                                                'onchange': 'price_map_info();', 
+                                                                'class' : 'form-control map-form mt-2',
+                                                                'placeholder' : 'Phone Number'}),
             'delivery_point_name' : forms.TextInput(attrs={'id': 'name2',
                                                             'onchange': 'price_map_info();',
                                                             'class':'form-control map-form mt-2',
@@ -89,3 +90,54 @@ class maps(forms.ModelForm):
                                                             'class' : 'form-control map-form mt-2',
                                                             'placeholder' : 'Phone Number'}),
         }
+
+class contactus_Form(forms.ModelForm):
+
+    class Meta:
+        model = contactus
+        exclude = ('user_id',)
+        widgets = {
+            'name' : forms.TextInput(attrs={'id':'name',
+                                            'class':'form-control mb-3 mt-2',
+                                             'placeholder' : 'Enter Your Name'}),
+            'email' : forms.EmailInput(attrs={'id':'email',
+                                            'class':'form-control mb-3 mt-2',
+                                             'placeholder' : 'Enter Your Email Address'}),
+            'message' : forms.Textarea(attrs={'id':'message',
+                                            'class':'form-control mt-2',
+                                            'rows' : '5',
+                                            'placeholder' : 'Enter Your Message'}),
+        }
+
+class User_Form(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = "__all__"
+        widgets = {
+            'first_name' : forms.TextInput(attrs={'id': 'first_name',
+                                                  'class':'form-control mb-3 mt-2',
+                                             'placeholder' : 'Enter Your First Name'}),
+            'last_name' : forms.TextInput(attrs={'id': 'last_name',
+                                                  'class':'form-control mb-3 mt-2',
+                                             'placeholder' : 'Enter Your Last Name'}),
+            'email' : forms.TextInput(attrs={'id': 'email',
+                                                  'class':'form-control mb-3 mt-2',
+                                             'placeholder' : 'Enter Your Email Address'})
+        }
+
+class profile_Form(forms.ModelForm):
+
+    phone_no = forms.CharField(required=False,
+                                widget=forms.TextInput(attrs={'id': 'phone_no',
+                                                  'class':'form-control mb-3 mt-2',
+                                             'placeholder' : 'Enter Your Phone Number'}))
+    address = forms.CharField(required=False,
+                                widget=forms.TextInput(attrs={'id': 'address',
+                                                  'class':'form-control mb-3 mt-2',
+                                             'placeholder' : 'Enter Your Current Address'}),)
+    image = forms.ImageField(required=False)
+
+    class Meta:
+        model = profile
+        fields = "__all__"

@@ -9,7 +9,6 @@
         <div class="card mapcard">
             <form action="" method="POST">
                 {% csrf_token %}
-                {{ map_form.non_field_errors }}
                 <img class="card-img-top "
                     src="{% static 'media/mapformcard.jpg' %}"
                     alt="Card image">
@@ -18,43 +17,35 @@
                         <div id="pickuppoint">
                             <b>Pickup Point</b>
                             <div class="name1">
-                                {{ map_form.pickup_point_name|safe }}
-                                {{ map_form.pickup_point_name.error }}
+                                {{ map_form.pickup_point_name }}
                             </div>
                             <div class="address1">
-                                {{ map_form.pickup_point_address|safe }}
-                                {{ map_form.pickup_point_address.error }}
+                                {{ map_form.pickup_point_address }}
                             </div>
                             <div class="number1">
-                                {{ map_form.pickup_point_phone_number|safe }}
-                                {{ map_form.pickup_point_phone_number.error }}
+                                {{ map_form.pickup_point_phone_number }}
                             </div>
                         </div>
                         <div class="mt-4" id="deliverypoint">
                             <b>Delivery Point</b>
                             <div class="name2">
-                                {{ map_form.delivery_point_name|safe }}
-                                {{ map_form.delivery_point_name.error }}
+                                {{ map_form.delivery_point_name }}
                             </div>
                             <div class="address2">
-                                {{ map_form.delivery_point_address|safe }}
-                                {{ map_form.delivery_point_address.error }}
+                                {{ map_form.delivery_point_address }}
                             </div>
                             <div class="number2">
-                                {{ map_form.delivery_point_phone_number|safe }}
-                                {{ map_form.delivery_point_phone_number.error }}
+                                {{ map_form.delivery_point_phone_number }}
                             </div>
                         </div>
                         <div class="mt-4" id="kg">
-                            Weight in Kilograms : {{ map_form.weight|safe }}
-                            {{ map_form.weight.error }}
+                            Weight in Kilograms : {{ map_form.weight }}
                         </div>
                         <div class="mt-4" id="modeofpayment">
                             <b>Mode of Payment</b>
                             {% for map in map_form.mode_of_payment %}
                                 <div class="mt-2">
-                                    {{map|safe}}
-                                    {{map.errors}}
+                                    {{ map }}
                                 </div>
                             {% endfor %}
                         </div>

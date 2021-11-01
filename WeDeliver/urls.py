@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 
 urlpatterns = [
@@ -6,10 +6,11 @@ urlpatterns = [
     path('home', home, name='home'),
     path('map', map, name='map'),
     path('aboutus', aboutus, name='aboutus'),
-    path('contactus', contactus, name='contactus'),
-    path('success', success, name='success'),
-    path('my-orders', orders, name='my-orders'),
-    path('cancelorder/<int:pk>', cancel_order, name='cancel-order'),
-    path('profile', profile, name='profile'),
-    path('logout', logout, name='logout')
+    path('contactus/<int:contactus_id>', Contactus, name='contactus'),
+    path('success/<int:user_id>', success, name='success'),
+    path('my-orders/<int:user_id>', orders, name='my-orders'),
+    path('cancelorder/<int:cancel_id>/<int:user_id>', cancel_order, name='cancel-order'),
+    path('profile', Profile, name='profile'),
+    path('update-profile/<int:updateprofile_id1>/<int:updateprofile_id2>', update_profile, name="update-profile"),
+    path('logout', logout, name='logout'),
 ]
