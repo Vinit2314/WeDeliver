@@ -138,6 +138,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = '/static/media'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/')
 ]
@@ -178,3 +181,9 @@ GOOGLE_API_KEY = 'AIzaSyDzXEs-EuKe3-pBGP5UB-NUNa20LLTnmXs'
 RAZORPAY_KEY = 'rzp_test_YeUQJn3xhNMSok'
 
 RAZORPAY_SECRET_KEY = 'YMTDA6EkqhUMEm5txnBuItQs'
+
+VONAGE_API_KEY = '36947d96'
+
+VONAGE__API_SECRET_KEY = 'Ala9TjYzxKNEhzEw'
+
+SENDINBLUE_API_KEY = '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'

@@ -46,6 +46,12 @@ class profile(models.Model):
     phone_no = models.CharField(max_length=10, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(default='default.jpg', upload_to=pic, null=True, blank=True)
+    phone_no_verification = models.CharField(max_length=2, choices=(('V', 'Verified'),
+                                                                    ('NV', 'Not Verified')), null=True)
+    email_verification = models.CharField(max_length=2, choices=(('V', 'Verified'),
+                                                                    ('NV', 'Not Verified')), null=True)
+    phone_no_otp = models.IntegerField(null=True, blank=True)
+    email_otp = models.IntegerField(null=True, blank=True)
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, *args, **kwargs):

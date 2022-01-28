@@ -115,13 +115,13 @@ class User_Form(forms.ModelForm):
         model = User
         fields = "__all__"
         widgets = {
-            'first_name' : forms.TextInput(attrs={'id': 'first_name',
+            'first_name' : forms.TextInput(attrs={'id' : 'first_name',
                                                   'class':'form-control mb-3 mt-2',
                                              'placeholder' : 'Enter Your First Name'}),
-            'last_name' : forms.TextInput(attrs={'id': 'last_name',
+            'last_name' : forms.TextInput(attrs={'id' : 'last_name',
                                                   'class':'form-control mb-3 mt-2',
                                              'placeholder' : 'Enter Your Last Name'}),
-            'email' : forms.TextInput(attrs={'id': 'email',
+            'email' : forms.TextInput(attrs={'id' : 'email',
                                                   'class':'form-control mb-3 mt-2',
                                              'placeholder' : 'Enter Your Email Address'})
         }
@@ -129,15 +129,18 @@ class User_Form(forms.ModelForm):
 class profile_Form(forms.ModelForm):
 
     phone_no = forms.CharField(required=False,
-                                widget=forms.TextInput(attrs={'id': 'phone_no',
-                                                  'class':'form-control mb-3 mt-2',
+                                widget=forms.TextInput(attrs={'id' : 'phone_no',
+                                                  'class' : 'form-control mb-3 mt-2',
+                                                  'maxlength' : '10',
+                                                  'type' : 'number',
                                              'placeholder' : 'Enter Your Phone Number'}))
     address = forms.CharField(required=False,
-                                widget=forms.TextInput(attrs={'id': 'address',
+                                widget=forms.TextInput(attrs={'id' : 'address',
                                                   'class':'form-control mb-3 mt-2',
                                              'placeholder' : 'Enter Your Current Address'}),)
     image = forms.ImageField(required=False)
-
+    phone_otp = forms.IntegerField(widget=forms.TextInput)
+    email_otp = forms.IntegerField(widget=forms.TextInput)
     class Meta:
         model = profile
         fields = "__all__"

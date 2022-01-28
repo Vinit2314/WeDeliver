@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% load static %} 
 {% block title %}Map{% endblock title %}
@@ -17,13 +18,21 @@
                         <div id="pickuppoint">
                             <b>Pickup Point</b>
                             <div class="name1">
-                                {{ map_form.pickup_point_name }}
+                                {% render_field map_form.pickup_point_name value=full_name  id="fullname"%}
                             </div>
                             <div class="address1">
-                                {{ map_form.pickup_point_address }}
+                                {% if user.profile.address == None %}
+                                    {{ map_form.pickup_point_address }}     
+                                {% else %}
+                                    {% render_field map_form.pickup_point_address value=user.profile.address id="pickup_point"%}
+                                {% endif %}
                             </div>
                             <div class="number1">
-                                {{ map_form.pickup_point_phone_number }}
+                                {% if user.profile.phone_no == None %}
+                                    {{ map_form.pickup_point_phone_number }}
+                                {% else %}
+                                    {% render_field map_form.pickup_point_phone_number value=user.profile.phone_no id="phone_no"%}
+                                {% endif %}
                             </div>
                         </div>
                         <div class="mt-4" id="deliverypoint">
@@ -64,7 +73,7 @@
         <div class="mt-4"></div>
     </div>
     <div class="col col-sm-8 d-none d-sm-block">
-            <div id="googleMap"></div>
+        <div id="googleMap1"></div>
     </div>
 
 {% endblock content2 %}

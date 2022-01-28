@@ -7,12 +7,12 @@
     <div class="container mb-4">
         {% for message in messages %}
         <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
-          <i class="fas fa-check-circle" style="height: 20; width: 20"></i> {{ message }}.
+          <i class="fas fa-check-circle contact-message"></i> {{ message }}.
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
         <div class="text-center mt-4 mb-3">
-            <h2>Contact Us</h2>
+            <h1>Contact Us</h1>
         </div>
         <div class="row">
             <div class="col-12 col-lg-6 mb-4 mt-4">
@@ -67,55 +67,4 @@
     </div>
 </div>
 
-<!-- <section class="contact">
-    <div class="content">
-        <h2 class=" mt-5">Contact Us</h2>
-        <p></p>
-    </div>
-    <div class=" contact_container">
-        <div class="contactInfo">
-            <div class="box">
-                <div class="icon"><i class="ri-map-pin-line"></i></div>
-                <div class="text">
-                    <h3>Address</h3>
-                    <p></p>
-                </div>
-            </div>
-            <div class="box">
-                <div class="icon"><i class="ri-phone-line"></i></div>
-                <div class="text">
-                    <h3>Phone</h3>
-                    <p>000-000-0000</p>
-                </div>
-            </div>
-            <div class="box">
-                <div class="icon"><i class="ri-mail-line"></i></div>
-                <div class="text">
-                    <h3>Email</h3>
-                    <p>wedeliver@gmail.com</p>
-                </div>
-            </div>
-        </div>
-        <div class="contactForm">
-            <form>
-                <h2>Send Messege</h2>
-                <div class="inputBox">
-                    <input type="text" name="" required="required">
-                    <span>Full Name</span>
-                </div>
-                <div class="inputBox">
-                    <input type="text" name="" required="required">
-                    <span>Email</span>
-                </div>
-                <div class="inputBox">
-                    <textarea required="required"></textarea>
-                    <span>Type your Message...</span>
-                </div>
-                <div class="inputBox">
-                    <input type="submit" name="" value="Send">
-                </div>
-            </form>
-        </div>
-    </div>
-</section> -->
 {% endblock content3 %}

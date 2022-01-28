@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import *
@@ -11,6 +12,12 @@ from django.contrib.auth.hashers import make_password
 import string
 import random
 import ast
+from random import randrange as ra
+import vonage
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
+from pprint import pprint
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 context = {}
 
@@ -60,10 +67,13 @@ def logout(request):
 
 def home(request):
     global userid
+    my_profile = profile_Form(request.POST, request.FILES)
+    user = User_Form(request.POST)
+    context['profile'] = my_profile
+    context['User'] = user
     loginform(request)
     signupform(request)
     return render(request, 'home.html', context)
-
 
 def map(request):
     loginform(request)
@@ -71,9 +81,16 @@ def map(request):
     context['nbar'] = 'map'
     context['razorpay_api_key'] = settings.RAZORPAY_KEY
     map_form = maps(request.POST)
+    my_profile = profile_Form(request.POST, request.FILES)
+    user = User_Form(request.POST)
+    context['profile'] = my_profile
+    context['User'] = user
     # if map_form.is_valid():
     #     map_form.save()
     context['map_form'] = map_form
+    if request.GET.get('fullname') != None:
+        full_name= request.GET.get('fullname')
+        context['full_name'] = full_name
     if request.GET.get('amount') != None:
         global name1, address1, number1, name2, address2, number2, kg, amt, mode_of_payment, order_id, payment
         name1 = request.GET.get('name1')
@@ -110,6 +127,10 @@ def map(request):
     return render(request, 'map.html', context)
 
 def aboutus(request):
+    my_profile = profile_Form(request.POST, request.FILES)
+    user = User_Form(request.POST)
+    context['profile'] = my_profile
+    context['User'] = user
     loginform(request)
     signupform(request)
     return render(request, "aboutus.html", context)
@@ -138,12 +159,16 @@ def Contactus(request, contactus_id):
 def orders(request, user_id):
     loginform(request)
     signupform(request)
-    orders_completed = order.objects.filter(user_id = user_id).filter(flag='CM')
-    orders_cancel = order.objects.filter(user_id = user_id).filter(flag='C')
-    orders_pending = order.objects.filter(user_id = user_id).filter(flag='P')
+    my_profile = profile_Form(request.POST, request.FILES)
+    user = User_Form(request.POST)
+    context['profile'] = my_profile
+    context['User'] = user
+    orders_completed = order.objects.filter(user_id = user_id, flag='CM')
+    orders_cancel = order.objects.filter(user_id = user_id, flag='C')
+    orders_pending = order.objects.filter(user_id = user_id, flag='P').order_by('-id')
     context['orders_completed'] = orders_completed
     context['orders_cancel'] = orders_cancel
-    context['orders_pending'] = orders_pending
+    context['orders_pending'] = orders_pending  
     return render(request, "orders.html", context)
     
 def cancel_order(request, cancel_id, user_id):
@@ -179,16 +204,19 @@ def cancel_order(request, cancel_id, user_id):
                 messages.info(request, "Order Canceled Successfully. Your money will be refunded within 5-7 working days")
     return redirect("my-orders", user_id)
 
-def Profile(request):
+def Profile(request, user_id):
     loginform(request)
     signupform(request)
     my_profile = profile_Form(request.POST, request.FILES)
     user = User_Form(request.POST)
+    email_verification = profile.objects.filter(user_id = user_id, email_verification = 'V')
     context['profile'] = my_profile
     context['User'] = user
+    context['email_verification'] = email_verification
     return render(request, "profile.html", context)
 
 def update_profile(request, updateprofile_id1, updateprofile_id2):
+    print('in')
     if request.method == 'POST' or request.method == 'FILES':
         updateProfile1 = User.objects.get(pk=updateprofile_id1)
         updateProfile2 = profile.objects.get(pk=updateprofile_id2)
@@ -208,15 +236,99 @@ def update_profile(request, updateprofile_id1, updateprofile_id2):
         updateProfile1.save()
         updateProfile2.save()
         messages.info(request, "Profile Updated Successfully")
-        return redirect("profile")
+        return redirect("profile", updateprofile_id1)
     else:
         return render(request, "profile.html", context)
+
+def set_location(request, updateprofile_id2):
+    if request.method == 'POST':
+        updatelocation = profile.objects.get(pk=updateprofile_id2)
+        updatelocation.address = request.POST['address']
+        updatelocation.save()
+        return redirect("home")
+    else:
+        return render(request, "home.html", context)
+
+def otp():
+    global OTP
+    OTP=str(ra(1000,9999))
+    print(OTP)
+    # return redirect("profile")
+
+def phone_otp(request):
+    client = vonage.Client(settings.VONAGE_API_KEY, secret=settings.VONAGE__API_SECRET_KEY)
+    sms = vonage.Sms(client)
+    otp(request)
+    responseData = sms.send_message(
+    {
+        "from": "WeDeliver",
+        "to": "918652220386",
+        "text": "Your One Time Password(otp) is " +  OTP,
+    }
+    )
+
+    if responseData["messages"][0]["status"] == "0":
+        print("Message sent successfully.")
+    else:
+        print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
+    return render(request, "profile.html", context)
+
+def email_otp(request, updateprofile_id2):
+    otp()
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = settings.SENDINBLUE_API_KEY
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+    subject = "OTP"
+    html_content = "<!DOCTYPE html><html><head><style>.font{overflow:auto;min-width:200px;line-height:2} .div{margin:50px auto;width:40rem;padding:20px 0} .border{color:rgb(218, 217, 217);border-bottom:1px solid rgb(218, 217, 217)} a{color: #00466a;font-size:1.4em;text-decoration:none;font-weight:600} .hi{color:black;font-family:1.1em} h2{background: #4b55cc;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;} .WeDeliver2{color:black;font-size:0.9em;} hr{border:none;border-top:1px solid rgb(218, 217, 217)} .end{float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300}</style></head><div class='font'><div class='div'><div class='border'><a href=''>WeDeliver</a></div><p class='hi'>Hi,</p><p>Thank you for choosing WeDeliver. Use the following OTP to complete your Verification procedures. OTP is valid for 1 minutes.</p><h2>%s</h2><p class='WeDeliver2'>Regards,<br />WeDeliver.</p><hr/><div class='end'><p>WeDeliver Inc</p><p>Tanmay Shinde</p><p>93 - TYIT</p></div></div></div></body></html>" %OTP
+    sender = {"name":"WeDeliver","email":"tanmayshinde79@gmail.com"}
+    to = [{"email":"tanmaysash2019bscit@student.mes.ac.in","name":"93 Tanmay Shinde TY-IT"}]
+    headers = {"Some-Custom-Name":"unique-id-1234"}
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, headers=headers, html_content=html_content, sender=sender, subject=subject)
+    emailotp = profile.objects.get(pk=updateprofile_id2)
+    emailotp.email_otp = OTP
+    emailotp.save()
+
+    try:
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SMTPApi->send_transac_email: %s\n" % e)
+    return render(request, "profile.html", context)
+
+def phone_no_otp_verification(request):
+    if request.GET.get('user_otp') != None:
+        user_otp = request.GET.get('user_otp')
+        print(user_otp)
+        if user_otp == OTP:
+            print('V')
+        else:
+            print('NV')
+    return render(request, "profile.html", context)
+
+def email_otp_verification(request, updateprofile_id2):
+    if request.GET.get('user_otp') != None:
+        user_otp = request.GET.get('user_otp')
+        emailotpverification = profile.objects.get(pk=updateprofile_id2)
+        print(user_otp)
+        if user_otp == OTP:
+            emailotpverification.email_verification = 'V'
+        else:
+            emailotpverification.email_verification = 'NV'
+            print('NV')
+        emailotpverification.save()
+    return render(request, "profile.html", context)
+        
+
 
 @csrf_exempt
 def success(request, user_id):
     loginform(request)
     signupform(request)
     order_info = order()
+    my_profile = profile_Form(request.POST, request.FILES)
+    user = User_Form(request.POST)
+    context['profile'] = my_profile
+    context['User'] = user
     client = razorpay.Client(
                 auth=(settings.RAZORPAY_KEY, settings.RAZORPAY_SECRET_KEY))
     order_info.pickup_point_name = name1

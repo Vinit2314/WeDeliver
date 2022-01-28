@@ -22,8 +22,9 @@ class contactusAdmin(admin.ModelAdmin):
     readonly_fields = [field.name for field in contactus._meta.get_fields()]
 
 class profileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in profile._meta.get_fields()]
+    list_display = ['id', 'user', 'phone_no', 'address', 'image','phone_no_verification', 'email_verification',]
     search_fields = ('user',)
+    list_filter = ('phone_no_verification', 'email_verification',)
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
