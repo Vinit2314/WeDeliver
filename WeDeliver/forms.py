@@ -19,7 +19,7 @@ class signup_Form(UserCreationForm):
             'last_name' : forms.TextInput(attrs={'class' : 'form-control',
                                                  'placeholder' : 'Last Name'}),
             'email' : forms.EmailInput(attrs={'class' : 'form-control',
-                                                 'placeholder' : 'Email Id'}),
+                                                 'placeholder' : 'Email Id',}),
             'username' : forms.TextInput(attrs={'class' : 'form-control',
                                                  'placeholder' : 'Crate Username'}),
             'password' : forms.PasswordInput(attrs={'class' : 'form-control',
@@ -76,7 +76,8 @@ class maps(forms.ModelForm):
             'pickup_point_phone_number' : forms.TextInput(attrs={'id': 'number1', 
                                                                 'onchange': 'price_map_info();', 
                                                                 'class' : 'form-control map-form mt-2',
-                                                                'placeholder' : 'Phone Number'}),
+                                                                'type' : 'tel',
+                                                                'placeholder' : 'Phone Number',}),
             'delivery_point_name' : forms.TextInput(attrs={'id': 'name2',
                                                             'onchange': 'price_map_info();',
                                                             'class':'form-control map-form mt-2',
@@ -88,7 +89,8 @@ class maps(forms.ModelForm):
             'delivery_point_phone_number' : forms.TextInput(attrs={'id': 'number2',
                                                             'onchange': 'price_map_info();',
                                                             'class' : 'form-control map-form mt-2',
-                                                            'placeholder' : 'Phone Number'}),
+                                                            'type' : 'tel',
+                                                            'placeholder' : 'Phone Number',}),
         }
 
 class contactus_Form(forms.ModelForm):
@@ -129,11 +131,12 @@ class User_Form(forms.ModelForm):
 class profile_Form(forms.ModelForm):
 
     phone_no = forms.CharField(required=False,
-                                widget=forms.TextInput(attrs={'id' : 'phone_no',
-                                                  'class' : 'form-control mb-3 mt-2',
-                                                  'maxlength' : '10',
-                                                  'type' : 'number',
-                                             'placeholder' : 'Enter Your Phone Number'}))
+                                widget=forms.TextInput(attrs={'onchange' : 'phone_emai_verify_button()',
+                                                'id' : 'phone_no',
+                                                'class' : 'form-control mb-3 mt-2',
+                                                'type' : 'tel',
+                                                'maxlength' : '10',
+                                                'placeholder' : 'Enter Your Phone Number'}))
     address = forms.CharField(required=False,
                                 widget=forms.TextInput(attrs={'id' : 'address',
                                                   'class':'form-control mb-3 mt-2',

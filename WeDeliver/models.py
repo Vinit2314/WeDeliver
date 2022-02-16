@@ -47,9 +47,9 @@ class profile(models.Model):
     address = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(default='default.jpg', upload_to=pic, null=True, blank=True)
     phone_no_verification = models.CharField(max_length=2, choices=(('V', 'Verified'),
-                                                                    ('NV', 'Not Verified')), null=True)
+                                                                    ('NV', 'Not Verified')), default='NV')
     email_verification = models.CharField(max_length=2, choices=(('V', 'Verified'),
-                                                                    ('NV', 'Not Verified')), null=True)
+                                                                    ('NV', 'Not Verified')), default='NV')
     phone_no_otp = models.IntegerField(null=True, blank=True)
     email_otp = models.IntegerField(null=True, blank=True)
 

@@ -1,6 +1,7 @@
 from __future__ import print_function
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
+from importlib_metadata import email
 from .forms import *
 from django.conf import settings
 from .models import *
@@ -18,6 +19,7 @@ import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 from pprint import pprint
 from django.contrib.staticfiles.storage import staticfiles_storage
+import time
 
 context = {}
 
@@ -204,19 +206,16 @@ def cancel_order(request, cancel_id, user_id):
                 messages.info(request, "Order Canceled Successfully. Your money will be refunded within 5-7 working days")
     return redirect("my-orders", user_id)
 
-def Profile(request, user_id):
+def Profile(request):
     loginform(request)
     signupform(request)
     my_profile = profile_Form(request.POST, request.FILES)
     user = User_Form(request.POST)
-    email_verification = profile.objects.filter(user_id = user_id, email_verification = 'V')
     context['profile'] = my_profile
     context['User'] = user
-    context['email_verification'] = email_verification
     return render(request, "profile.html", context)
 
 def update_profile(request, updateprofile_id1, updateprofile_id2):
-    print('in')
     if request.method == 'POST' or request.method == 'FILES':
         updateProfile1 = User.objects.get(pk=updateprofile_id1)
         updateProfile2 = profile.objects.get(pk=updateprofile_id2)
@@ -236,7 +235,7 @@ def update_profile(request, updateprofile_id1, updateprofile_id2):
         updateProfile1.save()
         updateProfile2.save()
         messages.info(request, "Profile Updated Successfully")
-        return redirect("profile", updateprofile_id1)
+        return redirect("profile")
     else:
         return render(request, "profile.html", context)
 
@@ -253,24 +252,41 @@ def otp():
     global OTP
     OTP=str(ra(1000,9999))
     print(OTP)
-    # return redirect("profile")
 
-def phone_otp(request):
+def phone_otp(request, updateprofile_id2):
     client = vonage.Client(settings.VONAGE_API_KEY, secret=settings.VONAGE__API_SECRET_KEY)
     sms = vonage.Sms(client)
-    otp(request)
+    otp()
     responseData = sms.send_message(
     {
         "from": "WeDeliver",
         "to": "918652220386",
-        "text": "Your One Time Password(otp) is " +  OTP,
+        "text": "Thanks for choosing WeDeliver. Your One Time Password(otp) is " +  OTP,
     }
     )
+
+    phonenootp = profile.objects.get(pk=updateprofile_id2)
 
     if responseData["messages"][0]["status"] == "0":
         print("Message sent successfully.")
     else:
         print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
+
+    for i in range(1,62):
+        if i > 60:
+            phonenootp.phone_no_otp = None
+            phonenootp.save()
+        else:
+            phonenootp.phone_no_otp = OTP
+            phonenootp.save()
+        try:
+            if phone_verify_flag == 'V':
+                phonenootpverification.phone_no_verification = 'V'
+                phonenootpverification.save()
+                break
+        except:
+            pass
+        time.sleep(1)
     return render(request, "profile.html", context)
 
 def email_otp(request, updateprofile_id2):
@@ -285,41 +301,52 @@ def email_otp(request, updateprofile_id2):
     headers = {"Some-Custom-Name":"unique-id-1234"}
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, headers=headers, html_content=html_content, sender=sender, subject=subject)
     emailotp = profile.objects.get(pk=updateprofile_id2)
-    emailotp.email_otp = OTP
-    emailotp.save()
-
+    
     try:
         api_response = api_instance.send_transac_email(send_smtp_email)
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling SMTPApi->send_transac_email: %s\n" % e)
+
+    for i in range(1,62):
+        if i > 60:
+            emailotp.email_otp = None
+            emailotp.save()
+        else:
+            emailotp.email_otp = OTP
+            emailotp.save()
+        try:
+            if email_verify_flag == 'V':
+                emailotpverification.email_verification = 'V'
+                emailotpverification.save()
+                break
+        except:
+            pass
+        time.sleep(1)
     return render(request, "profile.html", context)
 
-def phone_no_otp_verification(request):
-    if request.GET.get('user_otp') != None:
-        user_otp = request.GET.get('user_otp')
-        print(user_otp)
-        if user_otp == OTP:
-            print('V')
-        else:
-            print('NV')
+def resend_phone_no_otp(request, updateprofile_id2):
+    phone_otp(request, updateprofile_id2)
+    return render(request, "profile.html", context)
+
+def resend_email_otp(request, updateprofile_id2):
+    email_otp(request, updateprofile_id2)
+    return render(request, "profile.html", context)
+
+def phone_no_otp_verification(request, updateprofile_id2):
+    global user_otp, otp_from_phone, phonenootpverification, phone_verify_flag
+    if request.GET.get('phone_no_verify_flag') != None:
+        phone_verify_flag = request.GET.get('phone_no_verify_flag')
+        phonenootpverification = profile.objects.get(pk=updateprofile_id2)
     return render(request, "profile.html", context)
 
 def email_otp_verification(request, updateprofile_id2):
-    if request.GET.get('user_otp') != None:
-        user_otp = request.GET.get('user_otp')
+    global user_otp, otp_from_email, emailotpverification, email_verify_flag
+    if request.GET.get('email_verify_flag') != None:
+        email_verify_flag = request.GET.get('email_verify_flag')
         emailotpverification = profile.objects.get(pk=updateprofile_id2)
-        print(user_otp)
-        if user_otp == OTP:
-            emailotpverification.email_verification = 'V'
-        else:
-            emailotpverification.email_verification = 'NV'
-            print('NV')
-        emailotpverification.save()
     return render(request, "profile.html", context)
         
-
-
 @csrf_exempt
 def success(request, user_id):
     loginform(request)

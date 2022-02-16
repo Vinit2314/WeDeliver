@@ -24,9 +24,10 @@
     <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 </head>
 
-<body onload="full_name()">
+<body onload="full_name(), phone_emai_verify_button()">
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light scrolling-navbar">
         <div class="container">
             <a class="navbar-brand" href="home">We<span class="text-warning">Deliver</span></a>
@@ -80,7 +81,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-color" aria-labelledby="logindropdown">
                                 <li><a class="dropdown-item {% if 'profile' in request.path %} active{% endif %}"
-                                        href="{% url 'profile' user.id  %}">My Profile</a></li>
+                                        href="{% url 'profile' %}">My Profile</a></li>
                                 <li><a class="dropdown-item {% if 'my-orders' in request.path %} active{% endif %}"
                                         href="{% url 'my-orders' user.id  %}">My Order</a></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Logout <i
@@ -189,10 +190,10 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">   
-                            {% if user.profile.address == None %}
-                                {% render_field profile.address%}
+                            {% if user.x.address == None %}
+                                {% render_field profile.address id="set_location"%}
                             {% else %}
-                                {% render_field profile.address value=user.profile.address %}
+                                {% render_field profile.address value=user.profile.address id="set_location" %}
                             {% endif %}
                         </div>
                         <div class="container">
@@ -261,7 +262,6 @@
             </div>
         </div>
     </div>
-
     {% if 'home' in  request.path or request.path == '/WeDeliver/' %}
     <div class="home-img-background">
         <div class="container">
@@ -278,6 +278,12 @@
     </div>
     {% endif %}
 
+    <div hidden id="phone_no_otp_div">
+        {{ user.profile.phone_no_otp }}
+        </div>
+    <div hidden id="email_otp_div">
+        {{ user.profile.email_otp }}
+    </div>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'js/popper.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.min.js' %}"></script>
@@ -293,10 +299,13 @@
     {{ user.last_name|json_script:'lastname'}}
     {{ user.email|json_script:'email'}}
     {% if payment %}
-    {{ payment|json_script:"payment"}}
+    {{ payment|json_script:'payment' }}
     {% endif %}
+    {{ user.profile.id|json_script:'user_profile_id' }}
+    {{ user.profile.phone_no|json_script:'phone_number' }}
+    {{ user.email|json_script:'email_id' }}
     <script type="text/javascript" src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/main1.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.js' %}"></script>
     <script>
         var map2 = new google.maps.Map(document.getElementById("googleMap2"), mapOptions);

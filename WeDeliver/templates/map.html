@@ -24,14 +24,14 @@
                                 {% if user.profile.address == None %}
                                     {{ map_form.pickup_point_address }}     
                                 {% else %}
-                                    {% render_field map_form.pickup_point_address value=user.profile.address id="pickup_point"%}
+                                    {% render_field map_form.pickup_point_address value=user.profile.address%}
                                 {% endif %}
                             </div>
                             <div class="number1">
                                 {% if user.profile.phone_no == None %}
                                     {{ map_form.pickup_point_phone_number }}
                                 {% else %}
-                                    {% render_field map_form.pickup_point_phone_number value=user.profile.phone_no id="phone_no"%}
+                                    {% render_field map_form.pickup_point_phone_number value=user.profile.phone_no %}
                                 {% endif %}
                             </div>
                         </div>

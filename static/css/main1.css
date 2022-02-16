@@ -304,3 +304,225 @@ margin: 0;
   width: 100%;
   height: 480px;
 }
+
+/* loader */
+.tube {
+  position: relative;
+  width: 5px;
+  height: 48px;
+  background: rgb(13, 14, 13);
+  left: 32px;
+  bottom: 22px;
+  animation: put-put 2s infinite, move- truck 10s infinite;
+}
+.tube:before, .tube:after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 6px;
+  background: rgb(72, 73, 72);
+  position: absolute;
+  top: -5px;
+  left: 1px;
+  -webkit-transform: rotate(30deg);
+  -moz-transform: rotate(30deg);
+  -o-transform: rotate(30deg);
+  -ms-transform: rotate(30deg);
+  transform: rotate(30deg);
+}
+
+.TruckLoader {
+  border: #000 1px solid;
+  top: 40%;
+  position: relative;
+  width: 150px;
+  height: 40px;
+  background: rgb(46, 179, 95);
+  animation: put-put 2s infinite, move-truck 10s infinite;
+  background-size: 100% auto;
+  border-radius: 4px;
+  -webkit-box-reflect: below 15px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.1, transparent), to(rgba(255, 255, 255, 0.1)));
+}
+.TruckLoader:before, .TruckLoader:after {
+  content: "";
+  display: block;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  background: rgb(7, 34, 21);
+  position: absolute;
+  bottom: -10px;
+}
+.TruckLoader:before {
+  left: 6px;
+}
+.TruckLoader:after {
+  right: 6px;
+}
+.TruckLoader-cab {
+  border: #000 1px solid;
+  position: absolute;
+  left: -40px;
+  bottom: 0;
+  width: 38px;
+  height: 25px;
+  background: rgb(2, 137, 72);
+  border-radius: 40% 0 4px 4px;
+  -webkit-box-reflect: below 15px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.1, transparent), to(rgba(255, 255, 255, 0.1)));
+}
+.TruckLoader-cab:before, .TruckLoader-cab:after {
+  border: #000 1px solid;
+  position: absolute;
+  content: "";
+  display: block;
+  background: rgb(2, 137, 72);
+}
+.TruckLoader-cab:before {
+  width: 20px;
+  height: 15px;
+  top: -15px;
+  right: 0;
+  border-radius: 100% 0 0 0;
+}
+.TruckLoader-cab:after {
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  left: 5px;
+  border: 2px solid #fff;
+  background: rgb(7, 34, 21);
+  position: absolute;
+  bottom: -13px;
+}
+.TruckLoader-smoke, .TruckLoader-smoke:after, .TruckLoader-smoke:before {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  left: 5px;
+  top: -13px;
+  border-radius: 50%;
+  background: #333;
+}
+.TruckLoader-smoke {
+  animation: smoke-1 2s infinite;
+}
+.TruckLoader-smoke:after {
+  animation: smoke-2 3s infinite;
+}
+.TruckLoader-smoke:before {
+  animation: smoke-3 4s infinite;
+}
+
+@keyframes put-put {
+  0% {
+    margin-top: 0px;
+    height: 50px;
+  }
+  5% {
+    margin-top: -2px;
+    height: 52px;
+  }
+  20% {
+    margin-top: -1px;
+    height: 50px;
+  }
+  35% {
+    margin-top: 1px;
+    height: 49px;
+  }
+  40% {
+    margin-top: -1px;
+    height: 51px;
+  }
+  60% {
+    margin-top: 1px;
+    height: 49px;
+  }
+  75% {
+    margin-top: 0px;
+    height: 50px;
+  }
+  80% {
+    margin-top: -4px;
+    height: 52px;
+  }
+  100% {
+    margin-top: 1px;
+    height: 49px;
+  }
+}
+@keyframes smoke-1 {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    right: -20px;
+    bottom: -2px;
+    width: 30px;
+    height: 30px;
+    opacity: 0;
+  }
+}
+@keyframes smoke-2 {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    right: -60px;
+    bottom: -5px;
+    width: 25px;
+    height: 25px;
+    opacity: 0;
+  }
+}
+@keyframes smoke-3 {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    right: -30px;
+    bottom: -8px;
+    width: 35px;
+    height: 35px;
+    opacity: 0;
+  }
+}
+@keyframes move-truck {
+  0% {
+    margin-left: 90%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    margin-left: 45%;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    margin-left: 0;
+    opacity: 0;
+  }
+}
+#loadingDiv {
+  position:absolute;;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(255, 255, 255);
+}

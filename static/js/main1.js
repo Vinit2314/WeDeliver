@@ -1,7 +1,15 @@
 $(document).ready(function () {
-    $('.navbar-nav a').on('click', function () {
-        $('.navbar-collapse').collapse('show');
+    //loader
+    $('body').append('<div id="loadingDiv"><div class="TruckLoader"><i class="mt-2" style="display:flex; justify-content:center;">WeDeliver</i><div class="TruckLoader-cab"><div class="tube"><div class="TruckLoader-smoke"></div></div></div><hr /></div>');
+    $(window).on('load', function(){
+    setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
     });
+    function removeLoader(){
+    $( "#loadingDiv" ).fadeOut(500, function() {
+    // fadeOut complete. Remove the loading div
+    $( "#loadingDiv" ).remove(); //makes page more lightweight
+    });  
+    }
 
     //Login Modal
     $('#loginButton').click(function () {
@@ -62,6 +70,9 @@ $(document).ready(function () {
       });
 });
 
+var profile_user_id = JSON.parse(document.getElementById('user_profile_id').textContent);
+var resend = 0;
+
 //google map
 //set map options
 var myLatLng = { lat: 19.09761241932646, lng: 72.88250110269311 };
@@ -92,7 +103,6 @@ function calcRoute() {
         travelMode: google.maps.TravelMode.DRIVING, //WALKING, BYCYCLING, TRANSIT
         unitSystem: google.maps.UnitSystem.IMPERIAL
     };
-
     //create a DirectionsService object to use the route method and get a result for our request
     var directionsService = new google.maps.DirectionsService();
 
@@ -133,11 +143,14 @@ var autocomplete2 = new google.maps.places.Autocomplete(input2, options);
 var input3 = document.getElementById("address");
 var autocomplete3 = new google.maps.places.Autocomplete(input3, options);
 
-// var input4 = document.getElementById("setaddress");
-// var autocomplete3 = new google.maps.places.Autocomplete(input4, options);
+var input4 = document.getElementById("set_location");
+var autocomplete3 = new google.maps.places.Autocomplete(input4, options);
 
 //Price calculation and map form info
 function price_map_info() {
+    var firstname = JSON.parse(document.getElementById('firstname').textContent);
+    var lastname = JSON.parse(document.getElementById('lastname').textContent);
+    var username = firstname + ' ' + lastname
     var kg = $('#kg_value').val();
     var price_per_kg = 5;
     var distance = 10;
@@ -145,7 +158,7 @@ function price_map_info() {
     var price = 'Amt : ' + total_price + ' ₹';
     document.getElementById('price').innerHTML = price;
     var info = {
-        'name1' : $('#name1').val(),
+        'name1' : username,
         'address1' : $('#address1').val(),
         'number1' : $('#number1').val(),
         'name2' : $('#name2').val(),
@@ -153,6 +166,7 @@ function price_map_info() {
         'number2' : $('#number2').val(),
         'kg' : kg,
         'amount': total_price,
+        'csrfmiddlewaretoken' : $('input[name = csrfmiddlewaretoken]').val(),
     };
     $.ajax({
         url: "map",
@@ -229,7 +243,9 @@ function full_name() {
     var firstname = JSON.parse(document.getElementById('firstname').textContent);
     var lastname = JSON.parse(document.getElementById('lastname').textContent);
     var fullname = firstname + ' ' + lastname
-    var info = {'fullname' : fullname}
+    var info = {
+        'fullname' : fullname,
+    }
     $.ajax({
         url: "map",
         type: "GET",
@@ -237,18 +253,39 @@ function full_name() {
     });
 }
 
-function phoneotp() {
-    $.ajax({
-        url: "otp",
-        type: "GET",
-    });
+function phone_emai_verify_button() {
+    if( $("#phone_no").val() == "" ) {
+        $("#phone_number_otp").hide();
+    } else {
+        $("#phone_number_otp").show();
+    }
+    if( $("#email").val() == "" ) {
+        $("#email_id_otp").hide();
+    } else {
+        $("#email_id_otp").show();
+    }
 }
 
-function emailotp(user_id) {
+async function phoneotp(user_id) {
+    $.ajax({
+        url: "phoneotp/" + user_id,
+        type: "GET",
+    });
+    await new Promise(r => setTimeout(() => r(), 1000));
+    $( "#phone_no_otp_div" ).load(window.location.href + " #phone_no_otp_div" )
+    await new Promise(r => setTimeout(() => r(), 1000));
+    var phone_no_otp = document.getElementById('phone_no_otp_div').textContent;
+}
+
+async function emailotp(user_id) {
     $.ajax({
         url: "emailotp/" + user_id,
         type: "GET",
     });
+    await new Promise(r => setTimeout(() => r(), 1000));
+    $( "#email_otp_div" ).load(window.location.href + " #email_otp_div" )
+    await new Promise(r => setTimeout(() => r(), 1000));
+    var email_otp = document.getElementById('email_otp_div').textContent;
 }
 
 //Phone No. OTP Box
@@ -306,88 +343,247 @@ function getEmailOtpBoxElement(index) {
   }
 
 //User Phone No. OTP
-function user_phone_no_otp() {
+async function user_phone_no_otp(user_id) {
     var box1 = $('#MobileOtpBox1').val();
     var box2 = $('#MobileOtpBox2').val();
     var box3 = $('#MobileOtpBox3').val();
     var box4 = $('#MobileOtpBox4').val();
     user_otp = box1 + box2 + box3 + box4
-    info = {'user_otp' : user_otp}
-    $.ajax({
-        url: "phone_no_otp_verification",
-        type: "GET",
-        data: info,
-    });
+    var phone_no_otp = parseInt(document.getElementById('phone_no_otp_div').textContent);
+    if (user_otp == phone_no_otp) {
+        info = {
+            'user_otp' : user_otp,
+            'csrfmiddlewaretoken' : $('input[name = csrfmiddlewaretoken]').val(),
+            'phone_no_verify_flag' : 'V'
+                }
+        $.ajax({
+            url: "phone_no_otp_verification/" + user_id,
+            type: "GET",
+            data: info,
+        });
+        await new Promise(r => setTimeout(() => r(), 1000));
+        document.location.reload(true);
+    }else {
+        resend = 0;
+        var box = document.getElementsByClassName("form-control-otp");
+        var error = document.getElementsByClassName("otp_error");
+        error[0].innerHTML = "OTP does not Match. Plese try again.<br>";
+        var email_error = error[0];
+        email_error.style.color = "red";
+        for (var i=0; i < 4; i++){
+            var boxes = box[i];
+            boxes.style.borderColor = "red";
+        }
+    }
 }
 
 //User Email OTP
-function user_email_otp(user_id) {
+async function user_email_otp(user_id) {
     var box1 = $('#EmailOtpBox1').val();
     var box2 = $('#EmailOtpBox2').val();
     var box3 = $('#EmailOtpBox3').val();
     var box4 = $('#EmailOtpBox4').val();
     user_otp = box1 + box2 + box3 + box4
-    info = {'user_otp' : user_otp}
-    $.ajax({
-        url: "email_otp_verification/" + user_id,
-        type: "GET",
-        data: info,
-    });
+    var email_otp = parseInt(document.getElementById('email_otp_div').textContent);
+    if (user_otp == email_otp) {
+        info = {
+            'user_otp' : user_otp,
+            'csrfmiddlewaretoken' : $('input[name = csrfmiddlewaretoken]').val(),
+            'email_verify_flag' : 'V'
+                }
+        $.ajax({
+            url: "email_otp_verification/" + user_id,
+            type: "GET",
+            data: info,
+        });
+        await new Promise(r => setTimeout(() => r(), 1000));
+        document.location.reload(true);
+    }else {
+        resend = 0;
+        var box = document.getElementsByClassName("form-control-otp");
+        var error = document.getElementsByClassName("otp_error");
+        error[0].innerHTML = "OTP does not Match. Plese try again.<br>";
+        var email_error = error[0];
+        email_error.style.color = "red";
+        for (var i=4; i < 8; i++){
+            var boxes = box[i];
+            boxes.style.borderColor = "red";
+        }
+    }
 }
 
-async function otp_timer(otp_id) {
-    var seconds = 5;
+async function resendotp(user_id, otp_id) {
+    resend = 1;
+    var seconds = 31;
+    var endseconds = 61;
+    function tick() {
+    var resesndchangehead = document.getElementsByClassName("resendchangehead");
+    var retimer1 = document.getElementById("retimer1");
+    var retimer2 = document.getElementById("retimer2");
+    var resend_otp = document.getElementsByClassName("resend_otp");
+    var expire = document.getElementsByClassName("expire_otp");
+    var error = document.getElementsByClassName("otp_error");
+    resend_otp[otp_id].innerHTML = "";
+    seconds--;
+    if(otp_id == 0) {
+        resesndchangehead[0].innerHTML = "OTP has been <b>Resend</b> to your Mobile Number";
+        if(resend == 1){
+            error[0].innerHTML = "";
+        }
+    }
+    if(otp_id == 1) {
+        resesndchangehead[1].innerHTML = "OTP has been <b>Resend</b> to your E-Mail ID";
+        if(resend == 1){
+            error[1].innerHTML = "";
+        }
+    }
+    if(otp_id == 0) {
+        retimer1.innerHTML =  "Resend OTP in " + (seconds < 10 ? "0" : "") + String(seconds);
+        retimer1.style.color = "black";
+    }
+    if(otp_id == 1) {
+        retimer2.innerHTML =  "Resend OTP in " + (seconds < 10 ? "0" : "") + String(seconds);
+        retimer2.style.color = "black";
+    }
+    if(otp_id == 0) {
+        expire[otp_id].innerHTML = "<a onclick='user_phone_no_otp(profile_user_id)' class='btn btn-success'>Submit</a>"
+    }
+    if(otp_id ==1) {
+        expire[otp_id].innerHTML = "<a onclick='user_email_otp(profile_user_id)' class='btn btn-success'>Submit</a>"
+    }
+    if( seconds > 0) {
+        setTimeout(tick, 1000);
+    } else {
+        resend_otp[otp_id].innerHTML = "<button type='button' onclick='resendotp(profile_user_id, window.otp_id)' class='btn btn-primary'>Resend OTP</button>";
+        if(otp_id == 0) {
+        retimer1.innerHTML =  "";
+            }
+        if(otp_id == 1) {
+            retimer2.innerHTML =  "";
+            }
+        }
+    }
+    var box = document.getElementsByClassName("form-control-otp");
+    if(otp_id == 0){
+        for (var i=0; i < 4; i++){
+            var boxes = box[i];
+            boxes.style.borderColor = "#F3F6F9";
+        }
+    }
+    if(otp_id == 1){
+        for (var i=4; i < 8; i++){
+            var boxes = box[i];
+            boxes.style.borderColor = "#F3F6F9";
+        }
+    }
+    function end_otp() {
+        endseconds--;
+        if(endseconds > 0) {
+            setTimeout(end_otp, 1000);
+        }else{
+            var counter = document.getElementsByClassName("end_otp");
+            var expire = document.getElementsByClassName("expire_otp");
+            counter[otp_id].innerHTML = "Your otp has been expire.<br>Please click <b>Resend OTP</b> to get new otp.";
+            counter[otp_id].style.color = "red";
+            expire[otp_id].innerHTML = "";
+            if(otp_id == 0){
+                for (var i=0; i < 4; i++){
+                    var boxes = box[i];
+                    boxes.style.borderColor = "red";
+                }
+            }
+            if(otp_id == 1){
+                for (var i=4; i < 8; i++){
+                    var boxes = box[i];
+                    boxes.style.borderColor = "red";
+                }
+            }
+        }
+    }
+    tick();
+    end_otp();
+    if(otp_id == 0) {
+        $.ajax({
+            url: "resendphonenootp/" + user_id,
+            type: "GET",
+        });
+    }
+    if(otp_id == 1) {
+        $.ajax({
+            url: "resendemailotp/" + user_id,
+            type: "GET",
+        });
+    }
     await new Promise(r => setTimeout(() => r(), 1000));
+    if(otp_id == 0) {
+        $( "#phone_no_otp_div" ).load(window.location.href + " #phone_no_otp_div" );
+    }
+    if(otp_id == 1) {
+        $( "#email_otp_div" ).load(window.location.href + " #email_otp_div" );
+    }
+    await new Promise(r => setTimeout(() => r(), 1000));
+}
+
+function otp_timer(otp_id) {
+    window.otp_id= otp_id;
+    var seconds = 31;
+    var endseconds = 61;
     function tick() {
         var timer1 = document.getElementById("timer1");
         var timer2 = document.getElementById("timer2");
         var resend_otp = document.getElementsByClassName("resend_otp");
-        var end_otp = document.getElementsByClassName("end_otp");
         seconds--;
         if(otp_id == 0) {
-            timer1.innerHTML =  (seconds < 10 ? "0" : "") + String(seconds);
+            timer1.innerHTML =  "Resend OTP in " + (seconds < 10 ? "0" : "") + String(seconds);
         }
         if(otp_id == 1) {
-            timer2.innerHTML =  (seconds < 10 ? "0" : "") + String(seconds); 
-            console.log(timer2.textContent)
+            timer2.innerHTML =  "Resend OTP in " + (seconds < 10 ? "0" : "") + String(seconds);
         }
         if( seconds > 0 ) {
             setTimeout(tick, 1000);
-         } else {
-            resend_otp[otp_id].innerHTML = "<button type='button' class='btn btn-primary'>Resend OTP</button>";
-            end_otp[otp_id].innerHTML =  "";
+        } 
+        else {
+            resend_otp[otp_id].innerHTML = "<button type='button' onclick='resendotp(profile_user_id, window.otp_id)' class='btn btn-primary'>Resend OTP</button>";
+            if(otp_id == 0) {
+                timer1.innerHTML =  "";
+            }
+            if(otp_id == 1) {
+                timer2.innerHTML =  "";
+            }        
         }
     }
-    tick();
-}
-
-async function end_otp(otp_id) {
-    var seconds =10;
-    await new Promise(r => setTimeout(() => r(), 1000));
-    function tick() {
+    function end_otp() {
         var counter = document.getElementsByClassName("end_otp");
         var expire = document.getElementsByClassName("expire_otp");
         var box = document.getElementsByClassName("form-control-otp");
-        seconds--;
-        if( seconds > 0 ) {
-            setTimeout(tick, 1000);
-        } else {
-                counter[otp_id].innerHTML = "Your otp has been expire.<br>Please click <b>Resend OTP</b> to get new otp.";
-                counter[otp_id].style.color = "red";
-                expire[otp_id].innerHTML = "";
-                if(otp_id == 0){
-                    for (var i=0; i < 4; i++){
-                        var boxes = box[i];
-                        boxes.style.borderColor = "red";
-                    }
+        endseconds--;
+        if( endseconds > 0 ) {
+            if(resend == 0){
+                setTimeout(end_otp, 1000);
+            }
+            else{
+                return resend;
+            }
+        } 
+        else 
+        {
+            counter[otp_id].innerHTML = "Your otp has been expire.<br>Please click <b>Resend OTP</b> to get new otp.";
+            counter[otp_id].style.color = "red";
+            expire[otp_id].innerHTML = "";
+            if(otp_id == 0){
+                for (var i=0; i < 4; i++){
+                    var boxes = box[i];
+                    boxes.style.borderColor = "red";
                 }
-                if(otp_id ==1){
-                    for (var i=4; i < 8; i++){
-                        var boxes = box[i];
-                        boxes.style.borderColor = "red";
-                    }
+            }
+            if(otp_id == 1){
+                for (var i=4; i < 8; i++){
+                    var boxes = box[i];
+                    boxes.style.borderColor = "red";
                 }
+            }
         }
     }
     tick();
+    end_otp();
 }
