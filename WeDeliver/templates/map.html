@@ -18,7 +18,7 @@
                         <div id="pickuppoint">
                             <b>Pickup Point</b>
                             <div class="name1">
-                                {% render_field map_form.pickup_point_name value=full_name  id="fullname"%}
+                                {% render_field map_form.pickup_point_name value=full_name %}
                             </div>
                             <div class="address1">
                                 {% if user.profile.address == None %}
@@ -50,6 +50,9 @@
                         <div class="mt-4" id="kg">
                             Weight in Kilograms : {{ map_form.weight }}
                         </div>
+                        <div class="mt-4" id="pages_no">
+                            No. of Pages : {{ map_form.pages }}
+                        </div>
                         <div class="mt-4" id="modeofpayment">
                             <b>Mode of Payment</b>
                             {% for map in map_form.mode_of_payment %}
@@ -60,10 +63,12 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-6 price">
-                                <div class="mt-4" id="price" name="amount">Amt : 0 ₹</div>
+                                <div class="mt-4" id="price" name="amount">Amt : 0 &#x20B9;</div>
                             </div>
                             <div class="col-6 mt-3 placeorder">
-                                <input class="btn btn-success" type="submit" value="Proceed">
+                                <input class="btn btn-success" {% if user.is_authenticated %} {% if user.profile.phone_no_verification == "V" and user.profile.email_verification == "V" %} type="submit" {% else %} type="button" id="otprequiredButton" data-bs-toggle="modal"
+                                data-bs-target="#otprequiredModal" {% endif %} {% else %} type="button" id="loginrequiredButton" data-bs-toggle="modal"
+                                data-bs-target="#loginrequiredModal"{% endif %} value="Proceed">
                             </div>
                         </div>
                     </div>
@@ -74,6 +79,47 @@
     </div>
     <div class="col col-sm-8 d-none d-sm-block">
         <div id="googleMap1"></div>
+    </div>
+
+    <!-- Login Required Modal -->
+    <div class="modal fade" id="loginrequiredModal" data-bs-keyboard="true" tabindex="-1"
+        aria-labelledby="loginrequiredModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginrequiredModalLabel">Login Required</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">   
+                    To Proceed further, please LogIn.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" id="loginButton" data-bs-toggle="modal"
+                                    data-bs-target="#loginModal" data-bs-dismiss="modal" href="#"> Log In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phone and Email OTP Verification Required Modal -->
+    <div class="modal fade" id="otprequiredModal" data-bs-keyboard="true" tabindex="-1"
+        aria-labelledby="otprequiredModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="otprequiredModalLabel">OTP Verification Required</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">   
+                    To Proceed further, please Complete OTP Verification.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <a class="btn btn-success" href="{% url 'profile' %}"> Go to Profile</a>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock content2 %}

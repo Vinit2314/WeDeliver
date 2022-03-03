@@ -13,47 +13,84 @@
     <b>Paid On :</b> <a id = "paidon"></a>
     </div> -->
 
-<div class="container row-content top" style="display : block;">
-    <div class="row">
-        <div class="col text-center">
-            <br>
-            <h3>&#x20B9; <a id = "amt"></a></h3>
-            <h5><img src ="{% static 'media/check.png' %}" height="25px" width="25px"> Paid Succesfully</h5>
-        </div><br>
+<div class="row top">
+    <div class="col-0 col-sm-2"></div>
+    <div class="col-12 col-md-8">
+        <div class="card mb-2">
+            <div class="card-title m-2">
+                <h1 class="text-center">
+                    <i class="fas fa-check-circle text-success"></i> Order Place Successfully
+                </h1>
+            </div>
+            <hr class="hr-margin">
+            <div class="card-body">
+                <div class="mb-3">
+                    <h2>Order Id : <span class="text-success">{{ order_id }}</span></h2>
+                  </div>
+                <div>
+                    <h4>Pickup Point</h4>
+                    <div class="mt-3">
+                        <i class="fas fa-user"></i> <b>Name</b>
+                    </div>
+                    <div class="mt-1">
+                        {{ pickup_point_name }}
+                    </div>
+                    <div class="mt-3">
+                        <i class="fas fa-map-marker-alt"></i> <b>Pickup Location</b>
+                    </div>
+                    <div class="mt-1">
+                        {{ pickup_point_address }}
+                    </div>
+                    <div class="mt-3">
+                        <i class="fas fa-phone"></i> <b>Phone Number</b>
+                    </div>
+                    <div class="mt-1">
+                        {{ pickup_point_phone_number }}
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h4 class="mt-3">Delivery Point</h4>
+                    <div class="mt-3">
+                        <i class="fas fa-user"></i> <b>Name</b>
+                    </div>
+                    <div class="mt-1">
+                        {{ delivery_point_name }}
+                    </div>
+                    <div class="mt-3">
+                        <i class="fas fa-map-marker-alt"></i> <b>Delivery Location</b>
+                    </div>
+                    <div class="mt-1">
+                        {{ delivery_point_address }}
+                    </div>
+                    <div class="mt-3">
+                        <i class="fas fa-phone"></i> <b>Phone Number</b>
+                    </div>
+                    <div class="mt-1">
+                        {{ delivery_point_phone_number }}
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="mt-3" id="kg2">
+                        <b>Weight in Kilograms : </b>Up to {{ quantity}} kg
+                    </div>
+                    <div class="mt-3" id="pages_no2">
+                        <b>No. of Pages : </b> {{ quantity }}
+                    </div>
+                    <div class="mt-3">
+                       <b>Amount to be paid : </b>{{ amount }} &#x20B9;
+                    </div>
+                    <div class="mt-3">
+                        <b>Mode of Payment : </b>
+                        {{ modeofpayment }}
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary mt-2" type="button" onclick="window.print();">Download</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <hr style="color: #8a2be2; background-color:blueviolet;height:1.5px">
-    <table class="table table-striped text-center">
-        <tbody>
-            <tr>
-                <td>
-                    Payment Id
-                </td>
-                <td>
-                    <a id = "paymentid"></a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Paid On
-                </td>
-                <td>
-                    <a id = "paidon"></a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    <div class="text-center">
-        <button class="btn btn-primary mt-2" type="button" onclick="window.print();">Download</button>
-    </div><br>
+    <div class="col-0 col-sm-2"></div>
 </div>
-<script>
-    var amount = sessionStorage.getItem("amount");
-    document.getElementById("amt").innerHTML =  amount;
-    var payment_id = sessionStorage.getItem("paymentid");
-    document.getElementById("paymentid").innerHTML = payment_id;
-    var paid_on = sessionStorage.getItem("paidon");
-    document.getElementById("paidon").innerHTML =  paid_on;
-</script>
 
 {% endblock content2 %}

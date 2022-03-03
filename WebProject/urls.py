@@ -18,14 +18,20 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from django.views.generic import TemplateView
+from django.contrib.auth import views as auth_views
+from WeDeliver.forms import *
+from WeDeliver.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('WeDeliver/', include('WeDeliver.urls')),
     path('accounts/', include('allauth.urls')),
-    path('', TemplateView.as_view(template_name="social_app/index.html"))
+    path('', TemplateView.as_view(template_name="social_app/index.html")),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='reset_password_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="reset_password_confirm.html"), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='reset_password_complete.html'), name='password_reset_complete'),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)

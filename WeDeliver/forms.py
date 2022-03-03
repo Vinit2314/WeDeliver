@@ -1,13 +1,13 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django.utils.translation import gettext_lazy as _
-from . models import *
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm, SetPasswordForm
+from .models import *
 
 class signup_Form(UserCreationForm):
     confirm_password = forms.CharField(max_length=20,
                                        widget=forms.PasswordInput(attrs={'class' : 'form-control',
-                                                    'placeholder' : 'Confirm Password'}))
+                                                                        'id' : 'sign_confirm_password',
+                                                                        'placeholder' : 'Confirm Password'}))
      
     class Meta:
         model = User
@@ -23,6 +23,7 @@ class signup_Form(UserCreationForm):
             'username' : forms.TextInput(attrs={'class' : 'form-control',
                                                  'placeholder' : 'Crate Username'}),
             'password' : forms.PasswordInput(attrs={'class' : 'form-control',
+                                                    'id' : 'sign_password',
                                                     'placeholder' : 'Create Password'}),
         }
 
@@ -32,17 +33,22 @@ class login_Form(forms.Form):
                                 widget=forms.TextInput(attrs={'id' : 'user_name',
                                                  'autocomplete': 'username',
                                                  'class' : 'form-control login',
-                                                 'placeholder' : 'Username'}),)
+                                                 'placeholder' : 'Username',}))
 
     password = forms.CharField(widget=forms.PasswordInput(attrs={'id' : 'password',
-                                                    'autocomplete': 'current-password', 
+                                                    'autocomplete': 'password', 
                                                     'class' : 'form-control login', 
-                                                    'placeholder' : 'Password'}),)
+                                                    'placeholder' : 'Password',}))
 
     remember_me = forms.BooleanField(required=False,
                                     widget=forms.CheckboxInput(attrs={'id' : 'rememberme',
-                                                       'class': 'rememberme',}))
+                                                       'class': 'rememberme cursorpointer',}))
 
+class forget_password_Form(PasswordResetForm):
+    user_name_or_email = forms.CharField(max_length=254,
+                                    widget=forms.TextInput(attrs={'id' : 'forgot_password_username',
+                                                                    'class' : 'form-control mt-2',
+                                                                    'placeholder' : 'Username or Email-Id',}))
 
 class maps(forms.ModelForm):
     weight = forms.ChoiceField(choices=(('1', 'Up to 1 kg'),
@@ -53,6 +59,11 @@ class maps(forms.ModelForm):
                                     widget=forms.Select(attrs={'id': 'kg_value',
                                                                'onchange': 'price_map_info();',
                                                                'class' : 'btn dropdown-toggle btn-sm map-form-select'}))
+
+    pages = forms.CharField(widget=forms.TextInput(attrs={'id' : 'pages_value',
+                                                        'onchange': 'price_map_info();',
+                                                        'class' : 'form-control login map_card_page float-end',
+                                                        'placeholder' : 'No. of Pages',}))
 
     mode_of_payment = forms.ChoiceField(widget=forms.RadioSelect(attrs={'id': 'mode_of_payment',
                                                                         'onchange': 'price_map_info();'}),
@@ -131,7 +142,7 @@ class User_Form(forms.ModelForm):
 class profile_Form(forms.ModelForm):
 
     phone_no = forms.CharField(required=False,
-                                widget=forms.TextInput(attrs={'onchange' : 'phone_emai_verify_button()',
+                                widget=forms.TextInput(attrs={'onchange' : 'phone_emai_verify_button(), emailid_and_phoneno()',
                                                 'id' : 'phone_no',
                                                 'class' : 'form-control mb-3 mt-2',
                                                 'type' : 'tel',

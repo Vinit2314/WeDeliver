@@ -8,7 +8,7 @@
 <div class="margintop container mb-4">
     {% for message in messages %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle" style="height: 20; width: 20"></i> {{ message }}.
+        <i class="fas fa-check-circle"></i> <strong>{{ message }}</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endfor %}
@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="mt-2 d-none d-sm-block"></div>
-                                        <a class="btn btn-success otp-button" onclick="phoneotp('{{user.profile.id}}'), otp_timer(0)" id="MobileNumberVerificationButton" data-bs-toggle="modal" data-bs-target="#MobileNumberVerificationModal">Verify</a>
+                                        <a class="btn btn-success otp-button" onclick="phoneotp(), otp_timer(0)" id="MobileNumberVerificationButton" data-bs-toggle="modal" data-bs-target="#MobileNumberVerificationModal">Verify</a>
                                     </div>
                                 {% endif %}
                             </div>
@@ -81,9 +81,9 @@
                         <div class="col-sm-6">
                             <b><i class="fas fa-envelope"></i> Email ID :</b>
                             {% if user.email == None %}
-                                {% render_field User.email id="email" onchange="phone_emai_verify_button()"%}
+                                {% render_field User.email id="email" onchange="phone_emai_verify_button(), emailid_and_phoneno()"%}
                             {% else %}
-                                {% render_field User.email id="email" value=user.email onchange="phone_emai_verify_button()"%}
+                                {% render_field User.email id="email" value=user.email onchange="phone_emai_verify_button(), emailid_and_phoneno()"%}
                             {% endif %}                        
                         </div>
                         <div class="col-sm-6">
@@ -104,7 +104,7 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="mt-2 d-none d-sm-block"></div>
-                                        <a class="btn btn-success otp-button" onclick="emailotp('{{user.profile.id}}'), otp_timer(1)" id="EMailidVerificationButton" data-bs-toggle="modal" data-bs-target="#EMailidVerificationModal">Verify</a>
+                                        <a class="btn btn-success otp-button" onclick="emailotp(), otp_timer(1)" id="EMailidVerificationButton" data-bs-toggle="modal" data-bs-target="#EMailidVerificationModal">Verify</a>
                                     </div>
                                 {% endif %}
                             </div>
@@ -124,14 +124,14 @@
             </div>
             <div class="row mb-2">
                 <div class="text-center">
-                    <button class="btn btn-primary" formaction="{% url 'update-profile' user.id user.profile.id %}">Save Profile</button>
+                    <button class="btn btn-primary" formaction="{% url 'update-profile' %}">Save Profile</button>
                 </div>
             </div>
         </form> 
 
         <!-- Mobile Number Verification Modal-->
         <div class="modal fade" id="MobileNumberVerificationModal" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="MobileNumberVerificationModalLabel" aria-hidden="true">
+        aria-labelledby="MobileNumberVerificationModalLabel" aria-hidden="true"  data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form action="" method="POST">
@@ -162,7 +162,7 @@
                                     <div class="mt-4">
                                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                                         <span class="resend_otp"></span>
-                                        <span class="expire_otp"><a onclick="user_phone_no_otp('{{user.profile.id}}')" class="btn btn-success">Submit</a></span>
+                                        <span class="expire_otp"><a onclick="user_phone_no_otp()" class="btn btn-success">Submit</a></span>
                                     </div>
                                 </div>
                             </div>
@@ -172,8 +172,8 @@
         </div>
 
         <!-- E-Mail Id Verification Modal-->
-        <div class="modal fade" id="EMailidVerificationModal" data-bs-keyboard="true" tabindex="-1"
-        aria-labelledby="EMailidVerificationModalLabel" aria-hidden="true">
+        <div class="modal fade" id="EMailidVerificationModal" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="EMailidVerificationModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form action="" method="POST">
@@ -204,7 +204,7 @@
                                     <div class="mt-4">
                                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>&nbsp;
                                         <span class="resend_otp"></span>
-                                        <span class="expire_otp"><a onclick="user_email_otp('{{user.profile.id}}')" class="btn btn-success">Submit</a></span>
+                                        <span class="expire_otp"><a onclick="user_email_otp()" class="btn btn-success">Submit</a></span>
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +215,5 @@
 
     </div>
 </div>
-
-{% comment %} <div class="loader"></div> {% endcomment %}
 
 {% endblock content3 %}

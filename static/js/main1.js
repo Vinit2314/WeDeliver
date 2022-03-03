@@ -1,6 +1,6 @@
 $(document).ready(function () {
     //loader
-    $('body').append('<div id="loadingDiv"><div class="TruckLoader"><i class="mt-2" style="display:flex; justify-content:center;">WeDeliver</i><div class="TruckLoader-cab"><div class="tube"><div class="TruckLoader-smoke"></div></div></div><hr /></div>');
+    $('body').append('<div id="loadingDiv"><div class="TruckLoader d-none d-sm-block"><i class="mt-2" style="display:flex; justify-content:center;">WeDeliver</i><div class="TruckLoader-cab"><div class="tube"><div class="TruckLoader-smoke"></div></div></div><hr /></div><div class="loader d-block d-sm-none"></div>');
     $(window).on('load', function(){
     setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
     });
@@ -11,14 +11,20 @@ $(document).ready(function () {
     });  
     }
 
+    if(sessionStorage.getItem('type') == 'document') {
+        $("#kg").remove();
+        $("#kg1").remove();
+        $("#kg2").remove();
+    }
+    else if(sessionStorage.getItem('type') == 'food' || sessionStorage.getItem('type') == 'package') {
+        $("#pages_no").remove();
+        $("#pages_no1").remove();
+        $("#pages_no2").remove();
+    }
+    
     //Login Modal
     $('#loginButton').click(function () {
         $('#loginModal').modal('show');
-    })
-
-    //Reset Login Modal Modal
-    $('#loginModal').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
     })
 
     //Location Modal
@@ -31,13 +37,8 @@ $(document).ready(function () {
         $('#signinModal').modal('show');
     });
 
-    //Reset  Sign In Modal
-    $('#signinModal').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
-    })
-
     //Cancel Order Modal
-    $('cancel_order').click(function() {
+    $('#cancelorderButton').click(function() {
         $('#cancelorderModal').modal('show');
     });
 
@@ -68,10 +69,46 @@ $(document).ready(function () {
     $('.popover-dismiss').popover({
         trigger: 'focus'
       });
+
+    //Login Required Modal
+    $('#loginrequiredButton').click(function () {
+        $('#loginrequiredModal').modal('show');
+    })
+
+    //OTP Verification Required Modal
+    $('#otprequiredButton').click(function () {
+        $('#otprequiredModal').modal('show');
+    })
 });
 
-var profile_user_id = JSON.parse(document.getElementById('user_profile_id').textContent);
-var resend = 0;
+window.onload = () => {
+    globalThis.resend = 0;
+
+    const myInput = document.querySelectorAll("#password, #sign_password, #sign_confirm_password, #id_new_password1,#id_new_password2");
+    myInput.forEach(element => {
+        element.onpaste = e => e.preventDefault();
+    });
+
+    var login_flag = JSON.parse(document.getElementById('login_flag').textContent);
+    if(login_flag == "F") {
+        alert('Invalid Credentials!!');
+    }
+
+    var signup_flag = JSON.parse(document.getElementById('signup_flag').textContent);
+    if(signup_flag == "PF") {
+        alert('Password does not match!!');
+    }else if(signup_flag == "EF") {
+        alert('Email already registered!!');
+    }else if(signup_flag == "UF") {
+        alert('Username already Taken!!');
+    }else if(signup_flag == "EFUF") {
+        alert('Email already registered and Username already Taken!!');
+    }
+
+    emailid_and_phoneno()
+
+    phone_emai_verify_button()
+}
 
 //google map
 //set map options
@@ -148,42 +185,45 @@ var autocomplete3 = new google.maps.places.Autocomplete(input4, options);
 
 //Price calculation and map form info
 function price_map_info() {
-    var firstname = JSON.parse(document.getElementById('firstname').textContent);
-    var lastname = JSON.parse(document.getElementById('lastname').textContent);
-    var username = firstname + ' ' + lastname
-    var kg = $('#kg_value').val();
-    var price_per_kg = 5;
+    if(sessionStorage.getItem('type') == 'document') {
+        var quantity = $('#pages_value').val();
+    }
+    else if(sessionStorage.getItem('type') == 'food' || sessionStorage.getItem('type') == 'package') {
+        var quantity = $('#kg_value').val();
+    }
+    var price = sessionStorage.getItem('price');
     var distance = 10;
-    var total_price = Math.round(kg * price_per_kg * distance);
-    var price = 'Amt : ' + total_price + ' ₹';
+    var total_price = Math.round(quantity * price * distance);
+    var price = 'Amt : ' + total_price + ' &#x20B9;';
     document.getElementById('price').innerHTML = price;
     var info = {
-        'name1' : username,
+        'name1' : $('#name1').val(),
         'address1' : $('#address1').val(),
         'number1' : $('#number1').val(),
         'name2' : $('#name2').val(),
         'address2' : $('#address2').val(),
         'number2' : $('#number2').val(),
-        'kg' : kg,
+        'quantity' : quantity,
         'amount': total_price,
+        'type' : sessionStorage.getItem('type'),
         'csrfmiddlewaretoken' : $('input[name = csrfmiddlewaretoken]').val(),
     };
-    $.ajax({
-        url: "map",
-        type: "GET",
-        data: info,
-    });
+    if($('#name1').val() != '' && $('#address1').val() != '' && $('#number1').val() != '' && $('#name2').val() != '' && $('#address2').val() != '' && $('#number2').val() != '' && quantity != '') {
+        sessionStorage.setItem('name', $('#name1').val());
+        sessionStorage.setItem('number', $('#number1').val());
+        $.ajax({
+            url: "map",
+            type: "GET",
+            data: info,
+        });
+    }
 }
 
 // Razorpay
 function razorpay() {
     var payment = JSON.parse(document.getElementById('payment').textContent);
     var razorpay_api_key = JSON.parse(document.getElementById('razorpay_api_key').textContent);
-    var firstname = JSON.parse(document.getElementById('firstname').textContent);
-    var lastname = JSON.parse(document.getElementById('lastname').textContent);
     var email = JSON.parse(document.getElementById('email').textContent);
-    var user_id = JSON.parse(document.getElementById('user_id').textContent)
-    var username = firstname + ' ' + lastname
     var amount = payment.amount;
     var currency = payment.currency;
     var order_id = payment.id;
@@ -195,7 +235,7 @@ function razorpay() {
         "description": "Fast and Secure",
         "image": "/static/media/razorpaylogo.png",
         "order_id": order_id,
-        "callback_url":"success/"+user_id,
+        "callback_url":"success",
         // "handler": function (response) {
         //     var payment_id = response.razorpay_payment_id;
         //     sessionStorage.setItem("paymentid", payment_id);
@@ -207,9 +247,9 @@ function razorpay() {
         //     window.location.href = "success";
         // },
         "prefill": {
-            "name": username,
+            "name": sessionStorage.getItem('name'),
             "email": email,
-            "contact": "9999999999"
+            "contact": sessionStorage.getItem('number'),
         },
         "notes": {
             "address": "WeDeliver"
@@ -239,20 +279,13 @@ function backpage() {
     history.back()
 }
 
-function full_name() {
-    var firstname = JSON.parse(document.getElementById('firstname').textContent);
-    var lastname = JSON.parse(document.getElementById('lastname').textContent);
-    var fullname = firstname + ' ' + lastname
-    var info = {
-        'fullname' : fullname,
-    }
-    $.ajax({
-        url: "map",
-        type: "GET",
-        data: info,
-    });
-}
+function emailid_and_phoneno() {
+    //Phone No
+    globalThis.phone_no = $("#phone_no").val();
 
+    //Email-Id
+    globalThis.email_id = $("#email").val();
+}
 function phone_emai_verify_button() {
     if( $("#phone_no").val() == "" ) {
         $("#phone_number_otp").hide();
@@ -266,26 +299,32 @@ function phone_emai_verify_button() {
     }
 }
 
-async function phoneotp(user_id) {
+async function phoneotp() {
+    info = {
+        'phone_no' : phone_no,
+        }
     $.ajax({
-        url: "phoneotp/" + user_id,
+        url: "phoneotp",
         type: "GET",
+        data: info,
     });
     await new Promise(r => setTimeout(() => r(), 1000));
     $( "#phone_no_otp_div" ).load(window.location.href + " #phone_no_otp_div" )
     await new Promise(r => setTimeout(() => r(), 1000));
-    var phone_no_otp = document.getElementById('phone_no_otp_div').textContent;
 }
 
-async function emailotp(user_id) {
+async function emailotp() {
+    info = {
+            'email_id' : email_id,
+            }
     $.ajax({
-        url: "emailotp/" + user_id,
+        url: "emailotp",
         type: "GET",
+        data: info,
     });
     await new Promise(r => setTimeout(() => r(), 1000));
     $( "#email_otp_div" ).load(window.location.href + " #email_otp_div" )
     await new Promise(r => setTimeout(() => r(), 1000));
-    var email_otp = document.getElementById('email_otp_div').textContent;
 }
 
 //Phone No. OTP Box
@@ -343,7 +382,7 @@ function getEmailOtpBoxElement(index) {
   }
 
 //User Phone No. OTP
-async function user_phone_no_otp(user_id) {
+async function user_phone_no_otp() {
     var box1 = $('#MobileOtpBox1').val();
     var box2 = $('#MobileOtpBox2').val();
     var box3 = $('#MobileOtpBox3').val();
@@ -354,10 +393,11 @@ async function user_phone_no_otp(user_id) {
         info = {
             'user_otp' : user_otp,
             'csrfmiddlewaretoken' : $('input[name = csrfmiddlewaretoken]').val(),
-            'phone_no_verify_flag' : 'V'
+            'phone_no_verify_flag' : 'V',
+            'phone_no' : phone_no,
                 }
         $.ajax({
-            url: "phone_no_otp_verification/" + user_id,
+            url: "phone_no_otp_verification",
             type: "GET",
             data: info,
         });
@@ -378,7 +418,7 @@ async function user_phone_no_otp(user_id) {
 }
 
 //User Email OTP
-async function user_email_otp(user_id) {
+async function user_email_otp() {
     var box1 = $('#EmailOtpBox1').val();
     var box2 = $('#EmailOtpBox2').val();
     var box3 = $('#EmailOtpBox3').val();
@@ -389,21 +429,22 @@ async function user_email_otp(user_id) {
         info = {
             'user_otp' : user_otp,
             'csrfmiddlewaretoken' : $('input[name = csrfmiddlewaretoken]').val(),
-            'email_verify_flag' : 'V'
+            'email_verify_flag' : 'V',
+            'email_id' : email_id,
                 }
         $.ajax({
-            url: "email_otp_verification/" + user_id,
+            url: "email_otp_verification",
             type: "GET",
             data: info,
         });
-        await new Promise(r => setTimeout(() => r(), 1000));
+        await new Promise(r => setTimeout(() => r(), 1000));    
         document.location.reload(true);
     }else {
         resend = 0;
         var box = document.getElementsByClassName("form-control-otp");
         var error = document.getElementsByClassName("otp_error");
-        error[0].innerHTML = "OTP does not Match. Plese try again.<br>";
-        var email_error = error[0];
+        error[1].innerHTML = "OTP does not Match. Plese try again.<br>";
+        var email_error = error[1];
         email_error.style.color = "red";
         for (var i=4; i < 8; i++){
             var boxes = box[i];
@@ -412,7 +453,7 @@ async function user_email_otp(user_id) {
     }
 }
 
-async function resendotp(user_id, otp_id) {
+async function resendotp(otp_id) {
     resend = 1;
     var seconds = 31;
     var endseconds = 61;
@@ -446,15 +487,15 @@ async function resendotp(user_id, otp_id) {
         retimer2.style.color = "black";
     }
     if(otp_id == 0) {
-        expire[otp_id].innerHTML = "<a onclick='user_phone_no_otp(profile_user_id)' class='btn btn-success'>Submit</a>"
+        expire[otp_id].innerHTML = "<a onclick='user_phone_no_otp()' class='btn btn-success'>Submit</a>"
     }
     if(otp_id ==1) {
-        expire[otp_id].innerHTML = "<a onclick='user_email_otp(profile_user_id)' class='btn btn-success'>Submit</a>"
+        expire[otp_id].innerHTML = "<a onclick='user_email_otp()' class='btn btn-success'>Submit</a>"
     }
     if( seconds > 0) {
         setTimeout(tick, 1000);
     } else {
-        resend_otp[otp_id].innerHTML = "<button type='button' onclick='resendotp(profile_user_id, window.otp_id)' class='btn btn-primary'>Resend OTP</button>";
+        resend_otp[otp_id].innerHTML = "<button type='button' onclick='resendotp(otp_id)' class='btn btn-primary'>Resend OTP</button>";
         if(otp_id == 0) {
         retimer1.innerHTML =  "";
             }
@@ -503,15 +544,23 @@ async function resendotp(user_id, otp_id) {
     tick();
     end_otp();
     if(otp_id == 0) {
+        info = {
+            'phone_no' : phone_no,
+            }
         $.ajax({
-            url: "resendphonenootp/" + user_id,
+            url: "resendphonenootp",
             type: "GET",
+            data: info,
         });
     }
     if(otp_id == 1) {
+        info = {
+            'email_id' : email_id,
+            }
         $.ajax({
-            url: "resendemailotp/" + user_id,
+            url: "resendemailotp",
             type: "GET",
+            data: info,
         });
     }
     await new Promise(r => setTimeout(() => r(), 1000));
@@ -525,7 +574,7 @@ async function resendotp(user_id, otp_id) {
 }
 
 function otp_timer(otp_id) {
-    window.otp_id= otp_id;
+    globalThis.otp_id= otp_id;
     var seconds = 31;
     var endseconds = 61;
     function tick() {
@@ -543,7 +592,7 @@ function otp_timer(otp_id) {
             setTimeout(tick, 1000);
         } 
         else {
-            resend_otp[otp_id].innerHTML = "<button type='button' onclick='resendotp(profile_user_id, window.otp_id)' class='btn btn-primary'>Resend OTP</button>";
+            resend_otp[otp_id].innerHTML = "<button type='button' onclick='resendotp(otp_id)' class='btn btn-primary'>Resend OTP</button>";
             if(otp_id == 0) {
                 timer1.innerHTML =  "";
             }
@@ -586,4 +635,82 @@ function otp_timer(otp_id) {
     }
     tick();
     end_otp();
+}
+
+function cancel_order() {
+    $('.cancelmodal').modal('hide');
+    $('body').append('<div class="cont"><div class="paper"></div><cancelbutton><div class="cancelloader"><div></div><div></div><div></div><div></div><div></div><div></div></div>Canceling</cancelbutton><div class="g-cont"><div class="garbage"></div><div class="garbage"></div><div class="garbage"></div><div class="garbage"></div><div class="garbage"></div><div class="garbage"></div><div class="garbage"></div></div></div>');
+    setTimeout(removeLoader, 2000);
+    function removeLoader(){
+    $( ".cont" ).fadeOut(500, function() {
+    // fadeOut complete. Remove the loading div
+    $( ".cont" ).remove(); //makes page more lightweight
+    });  
+    }
+}
+
+function card(id) {
+    if(id == "document") {
+        var price = document.getElementById("document_price").textContent;
+        sessionStorage.setItem("type", "document");
+    }
+    else if(id == "food") {
+        var price = document.getElementById("food_price").textContent;
+        sessionStorage.setItem("type", "food");
+    }
+    else if(id == "package") {
+        var price = document.getElementById("package_price").textContent;
+        sessionStorage.setItem("type", "package");
+    }
+    sessionStorage.setItem("price", price);
+}
+
+function logout() {
+    sessionStorage.clear()
+}
+
+function check() {
+    if(document.getElementById("rememberme").checked == false){
+      document.getElementById("rememberme").checked = true;
+      }else if(document.getElementById("rememberme").checked == true){
+      document.getElementById("rememberme").checked = false;
+      }
+}
+
+function view_password(view_password_id) {
+    if(view_password_id == 1) {
+        var ViewPassword = document.querySelector('#view_password1');
+        var password = document.querySelector('#password');
+        view();
+    }else if(view_password_id == 2) {
+        var ViewPassword = document.querySelector('#view_password2')
+        var password = document.querySelector('#sign_password');
+        view();
+    }else if(view_password_id == 3) {
+        var ViewPassword = document.querySelector('#view_password3')
+        var password = document.querySelector('#sign_confirm_password');
+        view();
+    }
+    else if(view_password_id == 4) {
+        var ViewPassword = document.querySelector('#view_password4')
+        var password = document.querySelector('#id_new_password1');
+        view();
+    }
+    else if(view_password_id == 5) {
+        var ViewPassword = document.querySelector('#view_password5')
+        var password = document.querySelector('#id_new_password2');
+        view();
+    }
+
+    function view() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            if(ViewPassword.classList[1] == 'fad') {
+                ViewPassword.classList.remove('fad', 'fa-eye-slash');
+                ViewPassword.classList.add('fas', 'fa-eye')
+            }else if(ViewPassword.classList[1] == 'fas') {
+                ViewPassword.classList.remove('fas', 'fa-eye');
+                ViewPassword.classList.add('fad', 'fa-eye-slash')
+            }
+        };
 }

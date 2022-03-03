@@ -56,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'WebProject.urls'
@@ -139,7 +141,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/static/media'
+STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/')
@@ -151,8 +153,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'profilepic')
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = "http://localhost:8000/WeDeliver/"
+LOGIN_REDIRECT_URL = "/WeDeliver/"
 
+LOGIN_REQUIRED_URL = "/WeDeliver/"
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -171,6 +174,15 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+
+# SESSION_COOKIE_AGE = 14000
+
+# SESSION_EXPIRE_SECONDS = 14000
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_TIMEOUT_REDIRECT = '/WeDeliver/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -187,3 +199,7 @@ VONAGE_API_KEY = '36947d96'
 VONAGE__API_SECRET_KEY = 'Ala9TjYzxKNEhzEw'
 
 SENDINBLUE_API_KEY = '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'
+
+EMAIL_HOST_USER = 'tanmayshinde79@gmail.com'
+
+EMAIL_HOST = 'WeDeliver'

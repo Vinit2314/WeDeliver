@@ -23,7 +23,7 @@ class order(models.Model):
     delivery_point_name = models.CharField(max_length=50)
     delivery_point_address = models.CharField(max_length=100)
     delivery_point_phone_number = models.CharField(max_length=10)
-    weight = models.CharField(max_length=2)
+    quantity = models.CharField(max_length=10)
     mode_of_payment = models.CharField(max_length=20,)
     amount = models.IntegerField()  
     order_id = models.CharField(max_length=20, unique=True)
@@ -33,7 +33,8 @@ class order(models.Model):
     payment = models.CharField(max_length=10, choices=(('Pending' , 'Pending'),
                                                        ('Done' ,'Done'),
                                                        ('Cancel' ,'Cancel'),
-                                                       ('Refund' ,'Refund'),))                                
+                                                       ('Refund' ,'Refund'),))
+    type = models.CharField(max_length=10)                                
 
 class contactus(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
@@ -52,6 +53,8 @@ class profile(models.Model):
                                                                     ('NV', 'Not Verified')), default='NV')
     phone_no_otp = models.IntegerField(null=True, blank=True)
     email_otp = models.IntegerField(null=True, blank=True)
+    verified_phone_no = models.CharField(max_length=10, null=True, blank=True)
+    verified_email = models.EmailField(null=True, blank=True)
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, *args, **kwargs):
@@ -70,3 +73,8 @@ class profile(models.Model):
             output_size = 200   , 200
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+class price(models.Model):
+    document_price = models.FloatField()
+    food_price = models.FloatField()
+    package_price = models.FloatField()

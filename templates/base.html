@@ -19,15 +19,16 @@
     <link href="{% static 'css/all.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    <link href="{% static 'css/main1.css' %}" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <link href="{% static 'css/fontawesome.css' %}" rel="stylesheet">
     <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'media/favicon.png' %}"/>
 
 </head>
 
-<body onload="full_name(), phone_emai_verify_button()">
+<body>
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light scrolling-navbar">
         <div class="container">
             <a class="navbar-brand" href="home">We<span class="text-warning">Deliver</span></a>
@@ -49,55 +50,57 @@
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link {% if 'contactus' in request.path  %} active {% endif %} "
-                            href="{% url 'contactus' user.id %}">Contact Us</a>
+                            href="{% url 'contactus' %}">Contact Us</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link {% if 'contactus' in request.path %} active {% endif %} "
-                            href="{% url 'contactus' 0 %}">Contact Us</a>
+                            href="{% url 'contactus' %}">Contact Us</a>
                     </li>
                     {% endif %}
                 </ul>
             </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                    <li class="nav-item">
+            {% if 'WeDeliver' in request.path %}
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
 
-                        <a class="nav-link {% if user.profile.address != None and user.profile.address != '' %} active {% endif %}" id="locationButton" data-bs-toggle="modal" data-bs-target="#locationModal"
-                        href="#"> <i class="fas fa-map-marker-alt"></i>
-                            {% if user.profile.address == None or user.profile.address == '' %} 
-                                Set Location
-                            {% else %}
-                                {{ user.profile.address }}
-                            {% endif %}
-                        </a>
-    
-                    </li>
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle active" href="#" id="logindropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{user.username}}
+                            <a class="nav-link {% if user.profile.address != None and user.profile.address != '' %} active {% endif %}" id="locationButton" data-bs-toggle="modal" data-bs-target="#locationModal"
+                            href="#"> <i class="fas fa-map-marker-alt"></i>
+                                {% if user.profile.address == None or user.profile.address == '' %} 
+                                    Set Location
+                                {% else %}
+                                    {{ user.profile.address }}
+                                {% endif %}
                             </a>
-                            <ul class="dropdown-menu dropdown-color" aria-labelledby="logindropdown">
-                                <li><a class="dropdown-item {% if 'profile' in request.path %} active{% endif %}"
-                                        href="{% url 'profile' %}">My Profile</a></li>
-                                <li><a class="dropdown-item {% if 'my-orders' in request.path %} active{% endif %}"
-                                        href="{% url 'my-orders' user.id  %}">My Order</a></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout <i
-                                            class="fas fa-sign-out-alt"></i></a></li>
-                            </ul>
+        
                         </li>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle active" id="logindropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{user.username}}
+                                </a>
+                                <ul class="dropdown-menu dropdown-color" aria-labelledby="logindropdown">
+                                    <li><a class="dropdown-item {% if 'profile' in request.path %} active{% endif %}"
+                                            href="{% url 'profile' %}">My Profile</a></li>
+                                    <li><a class="dropdown-item {% if 'my-orders' in request.path %} active{% endif %}"
+                                            href="{% url 'my-orders' %}">My Order</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}?next={{request.path}}" onclick="logout()">Logout <i
+                                                class="fas fa-sign-out-alt"></i></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link cursorpointer" id="loginButton" data-bs-toggle="modal"
+                                    data-bs-target="#loginModal"><i class="fas fa-user-circle"></i> Log in</a>
+                            </li>
+                        {% endif %}
                     </ul>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" id="loginButton" data-bs-toggle="modal"
-                            data-bs-target="#loginModal" href="#"><i class="fas fa-user-circle"></i> Log in</a>
-                    </li>
-                    {% endif %}
-                </ul>
+                </div>
             </div>
-        </div>
+        {% endif %}
     </nav>
 
     <!-- Login Modal -->
@@ -122,7 +125,7 @@
                                         data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                             </div>
-                            <form id="loginform" action="" method="POST">
+                            <form id="loginform" action="{% url 'login' %}?next={{request.path}}" method="POST">
                                 {% csrf_token %}
                                 <div class="row">
                                     <div class="col-12 mt-3" id="username">
@@ -130,19 +133,20 @@
                                     </div>
                                     <div class="col-12 mt-3" id="pass_word">
                                         {{ loginform.password }}
+                                        <i class="view_password fad fa-eye-slash" id="view_password1"  onclick="view_password(1)"></i>
                                     </div>
                                     <div class="col-6 mt-3" id="remenber_me">
                                         {{ loginform.remember_me }}<span
-                                            class="font_size_10"> Remember Me </span>
+                                            class="font_size_10"> <a class="cursorpointer" onclick="check()">Remember Me</a> </span>
                                     </div>
                                     <div class="col-6 mt-4">
-                                        <a href="#" class="font_size_10 float_right">Forget Password?</a>
+                                        <a  class="font_size_10 float_right" href="{% url 'password_reset' %}">Forgot Password?</a>
                                     </div>
                                 </div>
                                 <div class="text-center mt-3">
                                     <a href="#">
                                         <button type="submit" id="loginbtn"
-                                            class="btn btn-primary mt-2 mb-2 font_size_10">
+                                            class="btn btn-success mt-2 mb-2 font_size_10 form-control">
                                             Log In
                                         </button>
                                     </a>
@@ -153,7 +157,7 @@
                             </div>
                             <p class="text-center font_size_10">LogIn with</p>
                             <div class="text-center">
-                                <a href="{% provider_login_url 'google' %}">
+                                <a href="{% provider_login_url 'google' %}?next={{request.path}}">
                                     <span><img src="{% static 'media/googlelogo.png' %}" class="btn login-logo"></span>
                                 </a>
                                 <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
@@ -165,11 +169,6 @@
                                 <span>New Users?<a id="signinButton" data-bs-toggle="modal"
                                         data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
                                         Account</a></span>
-                            </div>
-                            <div>
-                                {% for message in messages %}
-                                {{ message }}
-                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -183,29 +182,25 @@
         aria-labelledby="locationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="" method="POST">
-                    {% csrf_token %} 
+                <form action="{% url 'set-location' %}?next={{request.path}}" method="POST">
+                {% csrf_token %} 
                         <div class="modal-header">
                             <h5 class="modal-title" id="locationModalLabel">Set Location</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">   
-                            {% if user.x.address == None %}
+                            {% if user.profile.address == None %}
                                 {% render_field profile.address id="set_location"%}
                             {% else %}
                                 {% render_field profile.address value=user.profile.address id="set_location" %}
                             {% endif %}
                         </div>
-                        <div class="container">
+                        <div class="container d-none d-sm-block">
                             <div id="googleMap2"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                            {% if user.profile.id == None %}
-                                <button class="btn btn-success" formaction="{% url 'set-location' 0 %}">Update</button>
-                            {% else%}
-                                <button class="btn btn-success" formaction="{% url 'set-location' user.profile.id %}">Update</button>
-                            {% endif %}
+                                <button class="btn btn-success" type="submit">Update</button>
                         </div>
                 </form>
             </div>
@@ -222,7 +217,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="">
+                    <form method="POST" action="{% url 'signup' %}?next={{request.path}}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-6 mt-2">
@@ -239,34 +234,35 @@
                             </div>
                             <div class="col-6 mt-3">
                                 {{ signupform.password }}
+                                <i class="view_password fad fa-eye-slash" id="view_password2" onclick="view_password(2)"></i>
                             </div>
                             <div class="col-6 mt-3 mb-2">
                                 {{ signupform.confirm_password }}
+                                <i class="view_password fad fa-eye-slash" id="view_password3" onclick="view_password(3)"></i>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-center"><button type="submit" id="a" class="btn btn-primary">Sign Up</button>
+                            <p class="text-center"><button type="submit" class="btn btn-primary form-control">Sign Up</button>
                             </p>
                         </div>
                         <div class="text-center mt-3 font_size_10">
                             <span>Already have account?<a id="loginButton" data-bs-toggle="modal"
                                     data-bs-target="#loginModal" data-bs-dismiss="modal" href="#"> Log In</a></span>
                         </div>
-                        <div>
-                            {% for message in messages %}
-                            {{ message }}
-                            {% endfor %}
-                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
     {% if 'home' in  request.path or request.path == '/WeDeliver/' %}
-    <div class="home-img-background">
+    <div class="home-img-background d-none d-sm-block">
         <div class="container">
             {% block content %} {% endblock content %}
         </div>
+    </div>
+    <div class="container d-block d-sm-none">
+        {% block content1 %} {% endblock content1 %}
     </div>
     {% elif 'contactus' in request.path  or 'profile' in request.path%}
     <div>
@@ -277,10 +273,9 @@
         {% block content2 %} {% endblock content2 %}
     </div>
     {% endif %}
-
     <div hidden id="phone_no_otp_div">
         {{ user.profile.phone_no_otp }}
-        </div>
+    </div>
     <div hidden id="email_otp_div">
         {{ user.profile.email_otp }}
     </div>
@@ -294,16 +289,12 @@
     <script type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&libraries=places"></script>
     {{ razorpay_api_key|json_script:"razorpay_api_key" }}
-    {{ user.id|json_script:'user_id'}}
-    {{ user.first_name|json_script:'firstname'}}
-    {{ user.last_name|json_script:'lastname'}}
     {{ user.email|json_script:'email'}}
     {% if payment %}
     {{ payment|json_script:'payment' }}
     {% endif %}
-    {{ user.profile.id|json_script:'user_profile_id' }}
-    {{ user.profile.phone_no|json_script:'phone_number' }}
-    {{ user.email|json_script:'email_id' }}
+    {{ login_flag|json_script:'login_flag' }}
+    {{ signup_flag|json_script:'signup_flag' }}
     <script type="text/javascript" src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="text/javascript" src="{% static 'js/main1.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.js' %}"></script>

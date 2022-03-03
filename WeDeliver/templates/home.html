@@ -3,70 +3,114 @@
 {% block title %}Home{% endblock title %}
 
 {% block content %}
+{% block content1 %}
 <div class="top">
-    <div class="row d-none d-sm-block">
-        <div class="col-12">
-            <br><br><br><br><br><br><br><br><br>
+    <div class="row">
+        <div class="col-0 col-sm-12">
+            <div class="d-none d-sm-block">
+                <br><br><br><br><br><br><br><br>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-12 mt-4 mb-4">
-            <div class="row text-center">
-                <div class="col-12 col-sm-4 mt-4" id="Document">
-                    <a class="card-link" href="{% url 'map' %}">
-                        <div class="card card_home bg-dark text-light">
-                            <div class="card-body text-center">
-                                <div class="h1 mb-3">
-                                    <i class="fas fa-file-alt"></i>
+            <div class="row">
+                {% for p in price %}
+                    <div class="col-12 col-sm-4 mt-4" id="Document">
+                        <a class="text-decoration-none" href="{% url 'map' %}">
+                            <div class="card card_home bg-dark text-light">
+                                <div class="card-body" onclick="card('document')">
+                                    <div class="h1 mb-3 text-center">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <h3 class="card-title text-center">
+                                        Documents
+                                    </h3>
+                                    <p class="card-text">
+                                        <div class="documenttextmb">
+                                            <div>
+                                                <span>Price</span>
+                                                <span class="float-end"><span id="document_price">{{ p.document_price }}</span> Rs./pg/km</span>
+                                            </div>
+                                            <div>
+                                                <span>Min</span>
+                                                <span class="float-end">1 page</span>
+                                            </div>
+                                        </div>
+                                    </p>
                                 </div>
-                                <h3 class="card-title">
-                                    Documents
-                                </h3>
-                                <p class="card-text"><br><br><br>
-                                </p>
                             </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-12 col-sm-4 mt-4">
-                    <a class="card-link" href="{% url 'map' %}" id="Food">
-                        <div class="card card_home bg-success text-dark">
-                            <div class="card-body text-center">
-                                <div class="h1 mb-3">
-                                    <i class="fas fa-utensils"></i>
-
+                        </a>
+                    </div>
+                    <div class="col-12 col-sm-4 mt-4" id="Food">
+                        <a class="text-decoration-none" href="{% url 'map' %}">
+                            <div class="card card_home bg-success text-dark">
+                                <div class="card-body" onclick="card('food')">
+                                    <div class="h1 mb-3 text-center">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <h3 class="card-title text-center">
+                                        Food
+                                    </h3>
+                                    <p class="card-text">
+                                        <div>
+                                            <div>
+                                                <span>Price</span>
+                                                <span class="float-end"><span id="food_price">{{ p.food_price }}</span> Rs./kg/km</span>
+                                            </div>
+                                            <div>
+                                                <span>Min</span>
+                                                <span class="float-end">1 kg</span>
+                                            </div>
+                                            <div>
+                                                <span>Max</span>
+                                                <span class="float-end">20 kg</span>
+                                            </div>
+                                        </div>
+                                    </p>
                                 </div>
-                                <h3 class="card-title">
-                                    Food
-                                </h3>
-                                <p class="card-text"><br><br><br>
-                                </p>
                             </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-12 col-sm-4 mt-4">
-                    <a class="card-link" href="{% url 'map' %}" id="Package">
-                        <div class="card card_home bg-primary text-light">
-                            <div class="card-body text-center">
-                                <div class="h1 mb-3">
-                                    <i class="fas fa-shipping-fast"></i>
+                        </a>
+                    </div>
+                    <div class="col-12 col-sm-4 mt-4" id="Package">
+                        <a class="text-decoration-none" href="{% url 'map' %}">
+                            <div class="card card_home bg-primary text-light">
+                                <div class="card-body" onclick="card('package')">
+                                    <div class="h1 mb-3 text-center">
+                                        <i class="fas fa-shipping-fast"></i>
+                                    </div>
+                                    <h3 class="card-title text-center">
+                                        Packages
+                                    </h3>
+                                    <p class="card-text">
+                                        <div>
+                                            <div>
+                                                <span>Price</span>
+                                                <span class="float-end"><span id="package_price">{{ p.package_price }}</span> Rs./kg/km</span>
+                                            </div>
+                                            <div>
+                                                <span>Min</span>
+                                                <span class="float-end">1 kg</span>
+                                            </div>
+                                            <div>
+                                                <span>Max</span>
+                                                <span class="float-end">20 kg</span>
+                                            </div>
+                                        </div>
+                                    </p>
                                 </div>
-                                <h3 class="card-title">
-                                    Packages
-                                </h3>
-                                <p class="card-text"><br><br><br>
-                                </p>
                             </div>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
-    <div class="row mt-2 d-none d-sm-block">
-        <div class="col-12">
+    <div class="row mt-2">
+        <div class="col-0 col-sm-12">
         </div>
     </div>
 </div>
+
+{% endblock content1 %}
 {% endblock content %}
