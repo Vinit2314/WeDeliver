@@ -34,7 +34,8 @@ class order(models.Model):
                                                        ('Done' ,'Done'),
                                                        ('Cancel' ,'Cancel'),
                                                        ('Refund' ,'Refund'),))
-    type = models.CharField(max_length=10)                                
+    type = models.CharField(max_length=10)   
+    date = models.DateField()                             
 
 class contactus(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)

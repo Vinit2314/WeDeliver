@@ -93,8 +93,7 @@
                         </ul>
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link cursorpointer" id="loginButton" data-bs-toggle="modal"
-                                    data-bs-target="#loginModal"><i class="fas fa-user-circle"></i> Log in</a>
+                                <a class="nav-link cursorpointer" id="loginButton" href="{% url 'login' %}"><i class="fas fa-user-circle"></i> Log in</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -102,80 +101,6 @@
             </div>
         {% endif %}
     </nav>
-
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="loginModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col col-sm-5 d-none d-sm-block">
-                            <img src="{% static 'media/login.png' %}" class="img-fluid d-none d-sm-block" alt="login">
-                        </div>
-                        <div class="col-12 col-sm-7">
-                            <div class="row">
-                                <div class="col col-sm-10">
-                                    <b>
-                                        <p class="modal-title m-2 font_size_30" id="loginModalLabel">Log In</p>
-                                    </b>
-                                </div>
-                                <div class="col col-sm-2">
-                                    <button type="button" class="btn-close font_size_10  float_right"
-                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                            </div>
-                            <form id="loginform" action="{% url 'login' %}?next={{request.path}}" method="POST">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-12 mt-3" id="username">
-                                        {{ loginform.username }}
-                                    </div>
-                                    <div class="col-12 mt-3" id="pass_word">
-                                        {{ loginform.password }}
-                                        <i class="view_password fad fa-eye-slash" id="view_password1"  onclick="view_password(1)"></i>
-                                    </div>
-                                    <div class="col-6 mt-3" id="remenber_me">
-                                        {{ loginform.remember_me }}<span
-                                            class="font_size_10"> <a class="cursorpointer" onclick="check()">Remember Me</a> </span>
-                                    </div>
-                                    <div class="col-6 mt-4">
-                                        <a  class="font_size_10 float_right" href="{% url 'password_reset' %}">Forgot Password?</a>
-                                    </div>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="#">
-                                        <button type="submit" id="loginbtn"
-                                            class="btn btn-success mt-2 mb-2 font_size_10 form-control">
-                                            Log In
-                                        </button>
-                                    </a>
-                                </div>
-                            </form>
-                            <div class="login-hr">
-                                <p>or</p>
-                            </div>
-                            <p class="text-center font_size_10">LogIn with</p>
-                            <div class="text-center">
-                                <a href="{% provider_login_url 'google' %}?next={{request.path}}">
-                                    <span><img src="{% static 'media/googlelogo.png' %}" class="btn login-logo"></span>
-                                </a>
-                                <a href="{% provider_login_url 'facebook' method='js_sdk' %}">
-                                    <span><img src="{% static 'media/facebooklogo.png' %}"
-                                            class="btn login-logo"></span>
-                                </a>
-                            </div>
-                            <div class="text-center mt-3 font_size_10">
-                                <span>New Users?<a id="signinButton" data-bs-toggle="modal"
-                                        data-bs-target="#signinModal" data-bs-dismiss="modal" href="#"> Create
-                                        Account</a></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Location Modal -->
     <div class="modal fade" id="locationModal" data-bs-keyboard="true" tabindex="-1"
@@ -196,7 +121,7 @@
                             {% endif %}
                         </div>
                         <div class="container d-none d-sm-block">
-                            <div id="googleMap2"></div>
+                            <div id="googleMap1"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
@@ -206,55 +131,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Signin Modal -->
-    <div class="modal fade" id="signinModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="signinModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center" id="signinModalLabel">Sign Up</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{% url 'signup' %}?next={{request.path}}">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-6 mt-2">
-                                {{ signupform.first_name }}
-                            </div>
-                            <div class="col-6 mt-2">
-                                {{ signupform.last_name }}
-                            </div>
-                            <div class="col-12 mt-3">
-                                {{ signupform.email }}
-                            </div>
-                            <div class="col-12 mt-3">
-                                {{ signupform.username }}
-                            </div>
-                            <div class="col-6 mt-3">
-                                {{ signupform.password }}
-                                <i class="view_password fad fa-eye-slash" id="view_password2" onclick="view_password(2)"></i>
-                            </div>
-                            <div class="col-6 mt-3 mb-2">
-                                {{ signupform.confirm_password }}
-                                <i class="view_password fad fa-eye-slash" id="view_password3" onclick="view_password(3)"></i>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <p class="text-center"><button type="submit" class="btn btn-primary form-control">Sign Up</button>
-                            </p>
-                        </div>
-                        <div class="text-center mt-3 font_size_10">
-                            <span>Already have account?<a id="loginButton" data-bs-toggle="modal"
-                                    data-bs-target="#loginModal" data-bs-dismiss="modal" href="#"> Log In</a></span>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     {% if 'home' in  request.path or request.path == '/WeDeliver/' %}
     <div class="home-img-background d-none d-sm-block">
         <div class="container">
@@ -264,7 +141,7 @@
     <div class="container d-block d-sm-none">
         {% block content1 %} {% endblock content1 %}
     </div>
-    {% elif 'contactus' in request.path  or 'profile' in request.path%}
+    {% elif 'contactus' in request.path  or 'profile' in request.path or 'signup' in request.path %}
     <div>
         {% block content3 %} {% endblock content3 %}
     </div>
@@ -286,6 +163,7 @@
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
     <script type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&libraries=places"></script>
     {{ razorpay_api_key|json_script:"razorpay_api_key" }}
@@ -298,9 +176,6 @@
     <script type="text/javascript" src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="text/javascript" src="{% static 'js/main1.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/all.js' %}"></script>
-    <script>
-        var map2 = new google.maps.Map(document.getElementById("googleMap2"), mapOptions);
-    </script>
 </body>
 
 </html>

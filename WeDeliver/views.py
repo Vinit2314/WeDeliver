@@ -24,7 +24,7 @@ from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
-import base64
+from datetime import date
 
 
 context = {}
@@ -36,41 +36,46 @@ def signupform():
     context['signupform'] = signup_form
 
 def signup(request):
-    global userlogin, usern
-    if request.POST.get('password') != None and request.POST.get('first_name') != None:
-        if request.method == 'POST':
-            first_name = request.POST['first_name']
-            last_name = request.POST['last_name']
-            email = request.POST['email']
-            username = request.POST['username']
-            passw = request.POST['password']
-            password = make_password(passw)
-            confirm_password = request.POST['confirm_password']
-            if passw== confirm_password:
-                if User.objects.filter(email=email).exists() and User.objects.filter(username=username).exists():
-                    signup_flag = "EFUF"
-                elif User.objects.filter(email=email).exists():
-                    signup_flag = "EF"
-                elif User.objects.filter(username=username).exists():
-                    signup_flag = "UF"
-                else:
-                    user = User.objects.create(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
-                    user.save()
-                    userlogin = auth.authenticate(username=username, password=password)
-                    usern = username
-                    login(request)
-                    signup_flag = "S"
-            else : 
-                signup_flag = "PF"
-        context['signup_flag'] = signup_flag
-    return redirect(request.GET.get('next'))
+    if not request.user.is_authenticated:
+        loginform()
+        signupform()
+        global signup_flag
+        if request.POST.get('password') != None and request.POST.get('first_name') != None:
+            if request.method == 'POST':
+                first_name = request.POST['first_name']
+                last_name = request.POST['last_name']
+                email = request.POST['email']
+                username = request.POST['username']
+                passw = request.POST['password']
+                password = make_password(passw)
+                confirm_password = request.POST['confirm_password']
+                if passw== confirm_password:
+                    if User.objects.filter(email=email).exists() and User.objects.filter(username=username).exists():
+                        messages.error(request, "Email already registered and Username already Taken!!")  
+                    elif User.objects.filter(email=email).exists():
+                        messages.error(request, "Email already registered!!")  
+                    elif User.objects.filter(username=username).exists():
+                        messages.error(request, "Username already Taken!!")  
+                    else:
+                        user = User.objects.create(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
+                        user.save()
+                        messages.success(request, "User Created Successfully!!. You may Login Now.")
+                    return redirect("login")
+                else :
+                    messages.error(request, "Password does not match!!")  
+    else:
+        return redirect('home')
+    return render(request, 'signup.html', context)
 
 def loginform():
     login_form = login_Form()
     context['loginform'] = login_form
 
 def login(request):
-    try:
+    if not request.user.is_authenticated:
+        loginform()
+        signupform()
+        global signup_flag
         if request.POST.get('username') != None:
             if request.method == 'POST':
                 global user
@@ -81,20 +86,20 @@ def login(request):
                 if user is not None:
                     request.session['user'] = username
                     auth.login(request, user)
-                    login_flag = "S"
                     if login_form.is_valid():
                         if login_form.cleaned_data['remember_me'] == True:
                             settings.SESSION_COOKIE_AGE = 86400 * 31
                             settings.SESSION_EXPIRE_SECONDS = 86400 * 31
                             settings.SESSION_EXPIRE_AT_BROWSER_CLOSE  = False
+                    if 'reset' not in request.GET.get('next'):
+                        return redirect(request.GET.get('next'))
+                    else:
+                        return redirect('home')
                 else:
-                    login_flag = "F"
-                context['login_flag'] = login_flag    
-    except:
-        if userlogin is not None:
-            request.session['user'] = usern
-            auth.login(request, userlogin)
-    return redirect(request.GET.get('next'))
+                    messages.error(request, "Invalid Credentials!!")   
+    else:
+        return redirect('home')
+    return render(request, 'login.html', context)
 
 def logout(request):
     try:
@@ -167,10 +172,11 @@ def map(request):
     map_form = maps(request.POST)
     my_profile = profile_Form(request.POST, request.FILES)
     context['profile'] = my_profile
-    # if map_form.is_valid():
-    #     map_form.save()
     context['map_form'] = map_form
-    context['full_name'] = request.user.first_name + ' ' + request.user.last_name
+    if request.user.is_authenticated:
+        context['full_name'] = request.user.first_name + ' ' + request.user.last_name
+    else:
+        context['full_name'] = ''
     if request.GET.get('amount') != None:
         global name1, address1, number1, name2, address2, number2, quantity, amt, mode_of_payment, order_id, payment, types
         name1 = request.GET.get('name1')
@@ -246,10 +252,10 @@ def orders(request):
     context['profile'] = my_profile
     orders_completed = order.objects.filter(user_id = request.user.id, flag='CM')
     orders_cancel = order.objects.filter(user_id = request.user.id, flag='C')
-    orders_pending = order.objects.filter(user_id = request.user.id, flag='P').order_by('-id')
+    orders_pending = order.objects.filter(user_id = request.user.id, flag='P').order_by('-date')
     context['orders_completed'] = orders_completed
     context['orders_cancel'] = orders_cancel
-    context['orders_pending'] = orders_pending  
+    context['orders_pending'] = orders_pending
     return render(request, "orders.html", context)
   
 def cancel_order(request):
@@ -476,6 +482,7 @@ def success(request):
     order_info.user_id = request.user.id
     order_info.flag = 'P'
     order_info.type = types
+    order_info.date = date.today()
     if mode_of_payment == "Pay on Delivery":
         order_info.order_id = order_id
         order_info.payment = "Pending"
@@ -497,24 +504,7 @@ def success(request):
             if key2 == 'method':
                 order_info.mode_of_payment = value2
                 context['modeofpayment'] = value2
-    context['pickup_point_name'], context['pickup_point_address'], context['pickup_point_phone_number'] = name1, address1, number1
+    context['pickup_point_name'], context['pickup_point_address'], context['pickup_point_phone_number'], context['date'] = name1, address1, number1, date.today()
     context['delivery_point_name'], context['delivery_point_address'], context['delivery_point_phone_number'], context['quantity'] = name2, address2, number2, quantity
     order_info.save()
-    email_api()
-    email_id = request.user.email
-    name = request.user.first_name + '  ' + request.user.last_name
-    email_info = {
-        'name' : name
-    }
-    subject = "Order Place Successfully"
-    html_content = render_to_string("success_email.html", email_info)
-    sender = {"name": settings.EMAIL_HOST, "email": settings.EMAIL_HOST_USER}
-    to = [{"email": email_id, "name": name}]
-    headers = {"Some-Custom-Name":"unique-id-1234"}
-    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, headers=headers, html_content=html_content, sender=sender, subject=subject)
-    try:
-        api_response = api_instance.send_transac_email(send_smtp_email)
-        pprint(api_response)
-    except ApiException as e:
-        print("Exception when calling SMTPApi->send_transac_email: %s\n" % e)
     return render(request, 'success.html', context)

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
 from .models import *
 
 class signup_Form(UserCreationForm):
@@ -8,14 +8,14 @@ class signup_Form(UserCreationForm):
                                        widget=forms.PasswordInput(attrs={'class' : 'form-control',
                                                                         'id' : 'sign_confirm_password',
                                                                         'placeholder' : 'Confirm Password'}))
-     
     class Meta:
         model = User
         fields = ['first_name' , 'last_name', 'email', 'username', 'password']
 
         widgets = {
             'first_name' : forms.TextInput(attrs={'class' : 'form-control',
-                                                 'placeholder' : 'First Name'}),
+                                                 'placeholder' : 'First Name',
+                                                 'autofocus' : 'autofocus'}),
             'last_name' : forms.TextInput(attrs={'class' : 'form-control',
                                                  'placeholder' : 'Last Name'}),
             'email' : forms.EmailInput(attrs={'class' : 'form-control',
@@ -32,12 +32,12 @@ class login_Form(forms.Form):
     username = forms.CharField(max_length=20,
                                 widget=forms.TextInput(attrs={'id' : 'user_name',
                                                  'autocomplete': 'username',
-                                                 'class' : 'form-control login',
+                                                 'class' : 'form-control',
                                                  'placeholder' : 'Username',}))
 
     password = forms.CharField(widget=forms.PasswordInput(attrs={'id' : 'password',
                                                     'autocomplete': 'password', 
-                                                    'class' : 'form-control login', 
+                                                    'class' : 'form-control', 
                                                     'placeholder' : 'Password',}))
 
     remember_me = forms.BooleanField(required=False,

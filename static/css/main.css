@@ -149,8 +149,9 @@ input, textarea {
 }
 
 .login-logo {
-  padding: 5px 1px;
-  width: 40px;
+  width: 25px;
+  background-color: #ffffff;
+  border-radius: 3px;
 }
 
 .login {
@@ -171,8 +172,12 @@ input, textarea {
   height: 10px;
 }
 
-.font_size_10 {
-  font-size: 10px;
+.font_size_12 {
+  font-size: 12px;
+}
+
+.font_size_16 {
+  font-size: 16px;
 }
 
 .font_size_30 {
@@ -754,6 +759,13 @@ cancelbutton .cancelloader div:nth-child(6){
   margin-right: 0.5rem;
 }
 
+.view_password_signup {
+  cursor: pointer;
+  float: right;
+  margin-top: -2.3rem;
+  margin-right: 1rem;
+}
+
 @media (min-width: 576px){
   .forgot-password-modal-dialog {
     max-width: 300px;
@@ -763,3 +775,46 @@ cancelbutton .cancelloader div:nth-child(6){
 .cancel-order-modal-dialog {
       max-width: 400px;
   }}
+
+.divider:after,
+.divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgb(204, 201, 201);
+}
+
+.signupbody {
+  background: linear-gradient(to right, #0062E6, #6cbcf1);
+}
+
+.card-img-left {
+  width: 45%;
+  /* Link to your background image using in the property below! */
+  background: scroll center url('https://source.unsplash.com/WEQbe2jBg40/414x512');
+  background-size: cover;
+}
+
+.btn-login {
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+  padding: 0.75rem 1rem;
+}
+
+.btn-google {
+  color: white !important;
+  background-color: #ea4335;
+}
+
+.btn-facebook {
+  color: white !important;
+  background-color: #3b5998;
+}
+
+.login-facebook-btn {
+  background-color: #3b5998;
+}
+
+.login-card {
+  background-color: #efefef6b;
+}

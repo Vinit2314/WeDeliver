@@ -79,6 +79,7 @@ $(document).ready(function () {
     $('#otprequiredButton').click(function () {
         $('#otprequiredModal').modal('show');
     })
+
 });
 
 window.onload = () => {
@@ -89,26 +90,42 @@ window.onload = () => {
         element.onpaste = e => e.preventDefault();
     });
 
-    var login_flag = JSON.parse(document.getElementById('login_flag').textContent);
-    if(login_flag == "F") {
-        alert('Invalid Credentials!!');
-    }
-
-    var signup_flag = JSON.parse(document.getElementById('signup_flag').textContent);
-    if(signup_flag == "PF") {
-        alert('Password does not match!!');
-    }else if(signup_flag == "EF") {
-        alert('Email already registered!!');
-    }else if(signup_flag == "UF") {
-        alert('Username already Taken!!');
-    }else if(signup_flag == "EFUF") {
-        alert('Email already registered and Username already Taken!!');
-    }
-
     emailid_and_phoneno()
 
     phone_emai_verify_button()
 }
+
+//convert to PDF
+var doc = new jsPDF('p', 'pt', 'a4');
+var specialElementHandlers = {
+    '#editor': function (element, renderer) {
+        return true;
+    }
+}
+
+function addWaterMark(doc) {
+    doc.setPage(1);
+    doc.setFontSize(110)
+    doc.setTextColor(172, 224, 174);
+    doc.text('WeDeliver', 190, doc.internal.pageSize.height - 210, 45);
+    return doc;
+}
+
+$('#generatePDF').click(function () {
+    doc.fromHTML($('#htmlContent')[0], 15, 15, {
+        'width': 700,
+        'elementHandlers': specialElementHandlers
+    });
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    
+    addWaterMark(doc);
+    
+    doc.save('Receipt'+ dd + '-' + mm + '-' + yyyy + '.pdf');
+});
 
 //google map
 //set map options
@@ -194,7 +211,7 @@ function price_map_info() {
     var price = sessionStorage.getItem('price');
     var distance = 10;
     var total_price = Math.round(quantity * price * distance);
-    var price = 'Amt : ' + total_price + ' &#x20B9;';
+    var price = 'Amt : ' + total_price + ' Rs.';
     document.getElementById('price').innerHTML = price;
     var info = {
         'name1' : $('#name1').val(),
@@ -286,6 +303,7 @@ function emailid_and_phoneno() {
     //Email-Id
     globalThis.email_id = $("#email").val();
 }
+
 function phone_emai_verify_button() {
     if( $("#phone_no").val() == "" ) {
         $("#phone_number_otp").hide();

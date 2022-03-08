@@ -38,8 +38,11 @@
           <div class="collapse" id="pending_order_{{order.id}}">
             <div class="card-body">
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 col-sm-6">
                   <h4>Order Id : <span class="text-success">{{order.order_id}}</span></h4>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <h4>Date : <span class="text-warning">{{order.date}}</span></h4>
                 </div>
                 <div class="col-12 col-sm-6 mt-3">
                   <h4>Pickup Point</h4>
@@ -148,7 +151,9 @@
       {% else %}
       <div class="row">
         <div class="col-12 text-center center">
-          No Pending Order Yet
+          <div class="alert alert-warning fade show">
+            No Pending Order!!
+          </div>
         </div>
       </div>
       {% endif %}
@@ -168,8 +173,11 @@
           <div class="collapse" id="completed_order_{{order.id}}">
             <div class="card-body">
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 col-sm-6">
                   <h4>Order Id : {{order.order_id}}</h4>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <h4>Order Date : <span class="text-warning">{{order.date}}</span></h4>
                 </div>
                 <div class="col-12 col-sm-6 mt-3">
                   <h4>Pickup Point</h4>
@@ -250,7 +258,9 @@
       {% else %}
       <div class="row">
         <div class="col-12 text-center center">
-          No Completed Order Yet
+          <div class="alert alert-warning fade show">
+            No Completed Order Yet!!
+          </div>
         </div>
       </div>
       {% endif %}
@@ -270,8 +280,11 @@
           <div class="collapse" id="cancel_order_{{order.id}}">
             <div class="card-body">
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 col-sm-6">
                   <h4>Order Id : {{order.order_id}}</h4>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <h4>Order Date : <span class="text-warning">{{order.date}}</span></h4>
                 </div>
                 <div class="col-12 col-sm-6 mt-3">
                   <h4>Pickup Point</h4>
@@ -342,7 +355,7 @@
                   </div>
                 </div>
                 <div class="col-12 mt-3">
-                  <b>Amount to be paid : </b>{{order.amount}} ₹
+                  <b>Amount to be paid : </b>Rs. {{order.amount}}
                 </div>
               </div>
             </div>
@@ -353,7 +366,9 @@
       {% else %}
       <div class="row">
         <div class="col-12 text-center center">
-          No Canceled Order Yet
+          <div class="alert alert-warning fade show">
+            No Canceled Order Yet!!
+          </div>
         </div>
       </div>
       {% endif %}
@@ -363,9 +378,12 @@
 {% else %}
 <div class="top">
   <div class="text-center center">
-    No Order Yet
+    <div class="alert alert-warning fade show">
+      No Order Yet
+    </div>
   </div>
 </div>
+
 {% endif %}
 
 {% endblock content2 %}
