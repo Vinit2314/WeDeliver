@@ -154,7 +154,7 @@ def password_reset_request(request):
     context['forget_password_form'] = forget_password_Form()
     return render(request, 'reset_password.html', context)
 
-def home(request):
+def main(request):
     loginform()
     signupform()
     context['price'] = price.objects.all()

@@ -1,0 +1,77 @@
+{% extends 'Base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %} Login {% endblock title %}
+{% block content2 %}
+  <div class="top mb-2">
+    <div class="row">
+      <div class="col-12 col-sm-7 d-none d-sm-block">
+        <img src="{% static 'media/login.svg' %}" alt="login in" class="img-fluid">
+      </div>
+      <div class="col-12 col-sm-4">
+        <div class="card login-card">
+            {% for message in messages %}
+              <div class="row justify-content-center m-2">
+                  <div class="col-12">
+                    {% if message.tags == "error" %}
+                      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                          <i class="fas fa-times-circle"></i> <strong>{{message}}</strong>
+                          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% else %}
+                      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> <strong>{{message}}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endif%}
+                  </div>
+              </div>
+            {% endfor %}
+          <div class="contents order-2 order-md-1">
+              <div class="container">
+                  <div class="row align-items-center justify-content-center">
+                      <div class="mb-3">
+                        <b><p class="m-2 font_size_30">Log In</p></b>
+                      </div>
+                      <span class="text-center mb-2 font_size_16">Welcome Back!! New to WeDeliver?<a href="{% url 'signup' %}"> Create Account</a></span>.
+                      <form action="{% url 'login' %}?next={{ request.META.HTTP_REFERER }}" method="POST">
+                        {% csrf_token %}
+                          <div class="mb-2" id="username">
+                              {{ loginform.username }}
+                          </div>
+                          <div class="mb-3" id="pass_word">
+                            {{ loginform.password }}
+                            <i class="view_password fad fa-eye-slash" id="view_password1"  onclick="view_password(1)"></i>
+                          </div>
+                          <div class="d-flex mb-4 align-items-center font_size_12">
+                              <div class="col-6">
+                                  {{ loginform.remember_me }}
+                                  <a class="cursorpointer" onclick="check()">Remember Me</a>
+                              </label>
+                              </div>
+                              <div class="col-6">
+                                <a  class="float_right" href="{% url 'password_reset' %}">Forgot Password?</a>
+                              </div>
+                          </div>
+                          <input type="submit" value="Log In" class="btn btn-block btn-primary form-control">
+                          <div class="divider d-flex align-items-center my-4">
+                            <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+                          </div>
+                          <div class="social-login">
+                            <a href="{% provider_login_url 'google' %}?next={{ request.META.HTTP_REFERER }}" class="btn-primary btn-md btn btn-block d-flex justify-content-center align-items-center mb-2">
+                              <span><img src="{% static 'media/googlelogo.png' %}" class="login-logo"></span>&nbsp;Login with  Google
+                            </a>
+                            <a href="{% provider_login_url 'facebook' method='js_sdk' %}" class="btn-primary btn-md btn btn-block d-flex justify-content-center align-items-center mb-2 login-facebook-btn">
+                              <i class="fab fa-facebook-f"></i>&nbsp;Login with Facebook
+                            </a>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock content2 %}

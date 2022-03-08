@@ -1,0 +1,219 @@
+{% extends 'Base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}My Profile{% endblock title %}
+
+{% block content3 %}
+
+<div class="margintop container mb-4">
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    <div class="card profile-card p-4">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}    
+            <div class="row mt-2">
+                <div class="col-sm-3 d-flex flex-column align-items-center text-center p-3 py-3">
+                    {% if user.profile.image %}
+                    <img class="rounded-circle" src="{{ user.profile.image.url }}">
+                    {% endif %}
+                    <span>{% render_field profile.image class="form-control mt-2 mb-2" %}</span>
+                    <span class="font-weight-bold">{{ user.first_name}} {{ user.last_name }}</span>
+                    <span class="text-black-50">{{ user.email }}</span>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mt-2">
+                                <i class="fas fa-user"></i> <b>First Name :</b>
+                            </div>
+                            <div class="mt-1">
+                                {% render_field User.first_name value=user.first_name %}
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mt-2">
+                                <i class="fas fa-user"></i> <b>Last name :</b>
+                                <div class="mt-1">
+                                    {% render_field User.last_name value=user.last_name %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-6">
+                            <b><i class="fas fa-phone"></i> Mobile Number :</b>
+                            {% if user.profile.phone_no == None %}
+                                {% render_field profile.phone_no %}
+                            {% else %}
+                                {% render_field profile.phone_no value=user.profile.phone_no %}
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mt-4 d-none d-sm-block"></div>
+                            <div class="row" id="phone_number_otp">
+                                {% if user.profile.phone_no_verification == "V" %}
+                                <div class="col-sm-12">
+                                    <div class="mt-3 d-none d-sm-block"></div>
+                                            <span class="text-success"><i class="fas fa-check-circle"></i> <b>Verified</b></span>
+                                    </div>
+                                {% else %}
+                                <div class="col-6">
+                                    <div class="mt-3 d-none d-sm-block"></div>
+                                            <span class="text-danger"><i class="fas fa-times-circle"></i> <b>Not Verified</b></span>
+                                            <a class="popover-dismiss no" type="button" tabindex="0" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="focus" data-bs-content="Complete OTP Verification to Verify your Phone Number.">
+                                                <i class="fas fa-info-circle otp-info"></i>
+                                            </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mt-2 d-none d-sm-block"></div>
+                                        <a class="btn btn-success otp-button" onclick="phoneotp(), otp_timer(0)" id="MobileNumberVerificationButton" data-bs-toggle="modal" data-bs-target="#MobileNumberVerificationModal">Verify</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-6">
+                            <b><i class="fas fa-envelope"></i> Email ID :</b>
+                            {% if user.email == None %}
+                                {% render_field User.email id="email" onchange="phone_emai_verify_button(), emailid_and_phoneno()"%}
+                            {% else %}
+                                {% render_field User.email id="email" value=user.email onchange="phone_emai_verify_button(), emailid_and_phoneno()"%}
+                            {% endif %}                        
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mt-4 d-none d-sm-block"></div>
+                            <div class="row" id="email_id_otp">
+                                {% if user.profile.email_verification == "V" %}
+                                    <div class="col-sm-12">
+                                        <div class="mt-3 d-none d-sm-block"></div>
+                                            <span class="text-success"><i class="fas fa-check-circle"></i> <b>Verified</b></span>
+                                    </div>
+                                {% else %}
+                                    <div class="col-6">
+                                        <div class="mt-3 d-none d-sm-block"></div>
+                                            <span class="text-danger"><i class="fas fa-times-circle"></i> <b>Not Verified</b></span>
+                                            <a class="popover-dismiss" type="button" tabindex="0" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="focus" data-bs-content="Complete OTP Verification to Verify your E-Mail Id.">
+                                                <i class="fas fa-info-circle otp-info"></i>
+                                            </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mt-2 d-none d-sm-block"></div>
+                                        <a class="btn btn-success otp-button" onclick="emailotp(), otp_timer(1)" id="EMailidVerificationButton" data-bs-toggle="modal" data-bs-target="#EMailidVerificationModal">Verify</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-6">
+                            <b><i class="fas fa-map-marker-alt"></i> Address :</b>
+                            {% if user.profile.address == None %}
+                                {% render_field profile.address %}
+                            {% else %}
+                                {% render_field profile.address value=user.profile.address %}
+                            {% endif %}                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="text-center">
+                    <button class="btn btn-primary" formaction="{% url 'update-profile' %}">Save Profile</button>
+                </div>
+            </div>
+        </form> 
+
+        <!-- Mobile Number Verification Modal-->
+        <div class="modal fade" id="MobileNumberVerificationModal" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="MobileNumberVerificationModalLabel" aria-hidden="true"  data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="" method="POST">
+                        {% csrf_token %} 
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="MobileNumberVerificationModalLabel">Mobile Number Verification</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <p class="resendchangehead">OTP has been sent to Your Mobile Number</p>
+                                    <div class="mb-4 mt-3">
+                                        <div id="otp" class="flex justify-center">
+                                            <div class="row center-otp">
+                                                {% render_field profile.phone_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="MobileOtpBox1" type="number" maxlength="1" onkeyup="onMobileKeyUpEvent(1, event)" onfocus="onMobileFocusEvent(1)" %}&nbsp;&nbsp;
+                                                {% render_field profile.phone_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="MobileOtpBox2" type="number" maxlength="1" onkeyup="onMobileKeyUpEvent(2, event)" onfocus="onMobileFocusEvent(2)" %}&nbsp;&nbsp;
+                                                {% render_field profile.phone_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="MobileOtpBox3" type="number" maxlength="1" onkeyup="onMobileKeyUpEvent(3, event)" onfocus="onMobileFocusEvent(3)" %}&nbsp;&nbsp;
+                                                {% render_field profile.phone_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="MobileOtpBox4" type="number" maxlength="1" onkeyup="onMobileKeyUpEvent(4, event)" onfocus="onMobileFocusEvent(4)" %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="otp_error">
+                                    </div>
+                                    <div class="end_otp" id="retimer1">
+                                        <div id="timer1">
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                        <span class="resend_otp"></span>
+                                        <span class="expire_otp"><a onclick="user_phone_no_otp()" class="btn btn-success">Submit</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- E-Mail Id Verification Modal-->
+        <div class="modal fade" id="EMailidVerificationModal" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="EMailidVerificationModalLabel" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="" method="POST">
+                        {% csrf_token %} 
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="EmailidVerificationModalLabel">E-Mail Id Verification</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center resend">
+                                    <p class="resendchangehead">OTP has been sent to Your E-Mail Id</p>
+                                    <div class="mb-4 mt-3">
+                                        <div id="otp" class="flex justify-center">
+                                            <div class="row center-otp">
+                                                {% render_field profile.email_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="EmailOtpBox1" type="number" maxlength="1" onkeyup="onEmailKeyUpEvent(1, event)" onfocus="onEmailFocusEvent(1)" %}&nbsp;&nbsp;
+                                                {% render_field profile.email_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="EmailOtpBox2" type="number" maxlength="1" onkeyup="onEmailKeyUpEvent(2, event)" onfocus="onEmailFocusEvent(2)" %}&nbsp;&nbsp;
+                                                {% render_field profile.email_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="EmailOtpBox3" type="number" maxlength="1" onkeyup="onEmailKeyUpEvent(3, event)" onfocus="onEmailFocusEvent(3)" %}&nbsp;&nbsp;
+                                                {% render_field profile.email_otp class="form-control-otp form-control-solid-otp form-control-solid form-control" id="EmailOtpBox4" type="number" maxlength="1" onkeyup="onEmailKeyUpEvent(4, event)" onfocus="onEmailFocusEvent(4)" %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="otp_error">
+                                    </div>
+                                    <div class="end_otp" id="retimer2">
+                                        <div id="timer2">
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>&nbsp;
+                                        <span class="resend_otp"></span>
+                                        <span class="expire_otp"><a onclick="user_email_otp()" class="btn btn-success">Submit</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content3 %}

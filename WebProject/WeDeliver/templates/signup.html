@@ -1,0 +1,87 @@
+{% extends 'Base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %} Register {% endblock title %}
+
+{% block content3 %}
+<div class="signupbody top">
+    <div class="container">
+        <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card flex-row my-5 border-0 shadow rounded-3 overflow-hidden">
+            <div class="card-img-left d-none d-md-flex">
+            </div>
+            <div class="card-body p-4 p-sm-5">
+                {% for message in messages %}
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-times-circle"></i> <strong>{{message}}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+              {% endfor %}
+                <b><p class="m-4 font_size_30 text-center">Register</p></b>
+                <form method="POST" action="{% url 'signup' %}">
+                {% csrf_token %}
+                    <div class="form-floating mb-3">
+                        {{ signupform.first_name }}
+                        <label for="Username">First Name</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        {{ signupform.last_name }}
+                        <label for="Email">Last Name</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        {{ signupform.username }}
+                        <label for="Email">Create Username</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        {{ signupform.email }}
+                        <label for="Email">Email Address</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        {{ signupform.password }}
+                        <i class="view_password_signup fad fa-eye-slash" id="view_password2" onclick="view_password(2)"></i>
+                        <label for="Password">Create Password</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        {{ signupform.confirm_password }}
+                        <i class="view_password_signup fad fa-eye-slash" id="view_password3" onclick="view_password(3)"></i>
+                        <label for="floConfirm">Confirm Password</label>
+                    </div>
+
+                    <div class="d-grid mb-2">
+                        <button class="btn btn-lg btn-primary btn-login fw-bold text-uppercase" type="submit">Register</button>
+                    </div>
+
+                    <a class="d-block text-center mt-2 small" href="{% url 'login' %}">Have an account? Log In</a>
+
+                    <hr class="my-4">
+
+                    <div class="d-grid mb-2">
+                        <a class="btn btn-lg btn-google btn-login fw-bold text-uppercase"  href="{% provider_login_url 'google' %}?next={{ request.META.HTTP_REFERER }}">
+                            <i class="fab fa-google me-2"></i> Sign up with Google
+                        </a>
+                    </div>
+
+                    <div class="d-grid">
+                        <a class="btn btn-lg btn-facebook btn-login fw-bold text-uppercase" href="{% provider_login_url 'facebook' method='js_sdk' %}">
+                        <i class="fab fa-facebook-f me-2"></i> Sign up with Facebook
+                        </a>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock content3 %}

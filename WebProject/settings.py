@@ -93,7 +93,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
         'USER': 'postgres',
-        'PASSWORD': '9987793650',
+        'PASSWORD': 'Vinit@2001',
     }
 }
 
@@ -194,12 +194,12 @@ RAZORPAY_KEY = 'rzp_test_YeUQJn3xhNMSok'
 
 RAZORPAY_SECRET_KEY = 'YMTDA6EkqhUMEm5txnBuItQs'
 
-VONAGE_API_KEY = '36947d96'
+VONAGE_API_KEY = '6b627067'
 
-VONAGE__API_SECRET_KEY = 'Ala9TjYzxKNEhzEw'
+VONAGE__API_SECRET_KEY = 'PGYStAanqJITC02N'
 
-SENDINBLUE_API_KEY = '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'
+SENDINBLUE_API_KEY = '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'
 
-EMAIL_HOST_USER = 'tanmayshinde79@gmail.com'
+EMAIL_HOST_USER = 'vinitp389@gmail.com' 
 
 EMAIL_HOST = 'WeDeliver'

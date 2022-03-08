@@ -1,0 +1,74 @@
+{% extends 'Base.html' %}
+
+{% block title %}Contact Us{% endblock title %}
+
+{% block content3 %}
+<div class="top contact">
+    <div class="container mb-4">
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+          <i class="fas fa-check-circle contact-message"></i> <strong>{{ message }}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        <div class="text-center mt-4 mb-3">
+            <h1>Contact Us</h1>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-6 mb-4 mt-4">
+                <div class="row">
+                    <div class="col-1 col-sm-3"></div>
+                    <div class="col-11 col-sm-9">
+                        <div id="address">
+                            <h3><i class="fas fa-map-marked-alt"></i> Address</h3>
+                            <p>Pillai HOC College of Art, Science and Commerce, Raigad.</p>
+                        </div>
+                        <div id="phonenumber">
+                            <h3><i class="fas fa-phone"></i> Phone Number</h3>
+                            <p>000-000-0000</p>
+                        </div>
+                        <div id="email">
+                            <h3><i class="fas fa-envelope"></i> Email</h3>
+                            <p>wedeliver@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 mt-4">
+                <div class="row">
+                <div class="col-0 col-sm-2"></div>
+                <div class="col-12 col-sm-8 contactus">
+                    {% csrf_token %}
+                    <div class="card p-3">
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'contactus' %}?id={{ user.id }}" method="POST">
+                    {% else %}
+                        <form action="{% url 'contactus' %}?id=0" method="POST">
+                    {% endif %}
+                            <h2>Send Messege</h2>
+                            <div id="name">
+                                <span>Full Name</span>
+                                {{ contact_us.name }}
+                            </div>
+                            <div id="email">
+                                <span>Email</span>
+                                {{ contact_us.email }}
+                            </div>
+                            <div id="message">
+                                <span>Message</span>
+                                {{ contact_us.message }}
+                            </div>
+                            <div class="mt-4 mb-2">
+                                <input type="submit" class="form-control" name="" value="Send">
+                            </div>
+                        </form>
+                </div>
+                </div>
+                <div class="col-0 col-sm-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content3 %}

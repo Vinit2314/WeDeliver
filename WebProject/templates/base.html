@@ -1,0 +1,181 @@
+<!doctype html>
+{% load static %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% load widget_tweaks %}
+
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>WeDeliver | {% block title %}{% endblock title%}</title>
+    <!-- Bootstrap CSS -->
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/all.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'css/fontawesome.css' %}" rel="stylesheet">
+    <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'media/favicon.png' %}"/>
+
+</head>
+
+<body>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light scrolling-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="home">We<span class="text-warning">Deliver</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'home' in request.path or request.path == '/WeDeliver/' %} active {% endif %}"
+                            aria-current="page" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'aboutus' in request.path %} active {% endif %} "
+                            href="{% url 'aboutus' %}">About Us</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'contactus' in request.path  %} active {% endif %} "
+                            href="{% url 'contactus' %}">Contact Us</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'contactus' in request.path %} active {% endif %} "
+                            href="{% url 'contactus' %}">Contact Us</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% if 'WeDeliver' in request.path %}
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+
+                            <a class="nav-link {% if user.profile.address != None and user.profile.address != '' %} active {% endif %}" id="locationButton" data-bs-toggle="modal" data-bs-target="#locationModal"
+                            href="#"> <i class="fas fa-map-marker-alt"></i>
+                                {% if user.profile.address == None or user.profile.address == '' %} 
+                                    Set Location
+                                {% else %}
+                                    {{ user.profile.address }}
+                                {% endif %}
+                            </a>
+        
+                        </li>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle active" id="logindropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{user.username}}
+                                </a>
+                                <ul class="dropdown-menu dropdown-color" aria-labelledby="logindropdown">
+                                    <li><a class="dropdown-item {% if 'profile' in request.path %} active{% endif %}"
+                                            href="{% url 'profile' %}">My Profile</a></li>
+                                    <li><a class="dropdown-item {% if 'my-orders' in request.path %} active{% endif %}"
+                                            href="{% url 'my-orders' %}">My Order</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}?next={{request.path}}" onclick="logout()">Logout <i
+                                                class="fas fa-sign-out-alt"></i></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link cursorpointer" id="loginButton" href="{% url 'login' %}"><i class="fas fa-user-circle"></i> Log in</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </nav>
+
+    <!-- Location Modal -->
+    <div class="modal fade" id="locationModal" data-bs-keyboard="true" tabindex="-1"
+        aria-labelledby="locationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="{% url 'set-location' %}?next={{request.path}}" method="POST">
+                {% csrf_token %} 
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="locationModalLabel">Set Location</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">   
+                            {% if user.profile.address == None %}
+                                {% render_field profile.address id="set_location"%}
+                            {% else %}
+                                {% render_field profile.address value=user.profile.address id="set_location" %}
+                            {% endif %}
+                        </div>
+                        <div class="container d-none d-sm-block">
+                            <div id="googleMap1"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-success" type="submit">Update</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    {% if 'home' in  request.path or request.path == '/WeDeliver/' %}
+    <div class="home-img-background d-none d-sm-block">
+        <div class="container">
+            {% block content %} {% endblock content %}
+        </div>
+    </div>
+    <div class="container d-block d-sm-none">
+        {% block content1 %} {% endblock content1 %}
+    </div>
+    {% elif 'contactus' in request.path  or 'profile' in request.path or 'signup' in request.path %}
+    <div>
+        {% block content3 %} {% endblock content3 %}
+    </div>
+    {% else %}
+    <div class="container">
+        {% block content2 %} {% endblock content2 %}
+    </div>
+    {% endif %}
+    <div hidden id="phone_no_otp_div">
+        {{ user.profile.phone_no_otp }}
+    </div>
+    <div hidden id="email_otp_div">
+        {{ user.profile.email_otp }}
+    </div>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/popper.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/all.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key={{ google_map_key }}&libraries=places"></script>
+    {{ razorpay_api_key|json_script:"razorpay_api_key" }}
+    {{ user.email|json_script:'email'}}
+    {% if payment %}
+    {{ payment|json_script:'payment' }}
+    {% endif %}
+    {{ login_flag|json_script:'login_flag' }}
+    {{ signup_flag|json_script:'signup_flag' }}
+    <script type="text/javascript" src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script type="text/javascript" src="{% static 'js/main1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/all.js' %}"></script>
+</body>
+
+</html>

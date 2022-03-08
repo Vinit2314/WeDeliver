@@ -6,8 +6,8 @@ from django.views.generic.base import RedirectView
 favicon_view = RedirectView.as_view(url=staticfiles_storage.url('media/favicon.png'))
 
 urlpatterns = [
-    path('', home, name=''),
-    path('home', home, name='home'),
+    path('', main, name=''),
+    path('home', main, name='home'),
     path('map', map, name='map'),
     path('aboutus', aboutus, name='aboutus'),
     path('contactus', Contactus, name='contactus'),
